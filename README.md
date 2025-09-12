@@ -3,7 +3,7 @@
 ESP32-E project to build an interactive Gandalf staff.  
 
 ## Structure
-├── 01_Code
+├── 01_Code  
 │    └── firmware # PlatformIO project (ESP32 + Arduino framework)  
 │    ├── include # Project headers  
 │    ├── platformio.ini # Build configuration  
