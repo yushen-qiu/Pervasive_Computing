@@ -8,5 +8,5 @@ ESP32-E project to build an interactive Gandalf staff.
 │    ├── include # Project headers  
 │    ├── platformio.ini # Build configuration  
 │    └── src # main.cpp and implementation files  
-│  
-├──02_Doc/01_Examples – reference sketches for MPU6050	
+│── 02_Doc  
+      └── 01_Examples – reference sketches for MPU6050	
