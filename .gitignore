@@ -1,0 +1,32 @@
+# ---- PlatformIO ----
+.pio/
+.pioenvs/
+.piolibdeps/
+.clang_complete
+.gcc-flags.json
+
+# ---- Arduino/ESP32 build ----
+*.elf
+*.bin
+*.hex
+*.map
+*.d
+*.o
+
+# ---- Logs / temp ----
+*.log
+*.tmp
+
+# ---- OS cruft ----
+.DS_Store
+Thumbs.db
+
+# ---- VSCode / IDE ----
+.vscode/
+.idea/
+*.code-workspace
+
+# ---- Backup / misc ----
+*.bak
+*.swp
+*.swo
