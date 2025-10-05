@@ -9,7 +9,7 @@ ESP32-E project to build an interactive Gandalf staff.
 3. Provide navigation guidance toward the target.
 4. Automatically switch on the light when it is dark.
 
-# Pin Allocation
+## Pin Allocation
 ```
 | Usage        | Left  | Right | Usage        |
 |--------------|-------|-------|--------------|
