@@ -9,7 +9,27 @@ ESP32-E project to build an interactive Gandalf staff.
 3. Provide navigation guidance toward the target.
 4. Automatically switch on the light when it is dark.
 
-## Structure
+# Pin Allocation
+```
+| Usage        | Left  | Right | Usage        |
+|--------------|-------|-------|--------------|
+| —            | —     | VCC   | —            |
+| —            | —     | 3V3   | —            |
+| —            | —     | GND   | —            |
+| —            | 18    | 22    | —            |
+| —            | 23    | 21    | —            |
+| —            | 19    | 15    | —            |
+| —            | 22    | 35    | —            |
+| —            | 21    | 34    | —            |
+| —            | 2     | 39    | —            |
+| —            | 13    | 36    | —            |
+| —            | 14    | 12    | —            |
+| —            | 0     | 4     | —            |
+| —            | 26    | 16    | —            |
+| —            | 25    | 17    | —            |
+```
+
+## Repository Structure
 
 ```
 📂 Root
