@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include "GpsTracker.h"
+#include "GPSAutoBaud.h"
 
 // ESP32 UART2: GPS.TX -> GPIO16, GPS.RX -> GPIO17
 HardwareSerial GPS2(2);

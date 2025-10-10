@@ -1,4 +1,4 @@
-#include "GpsAutoBaud.h"
+#include "GPSAutoBaud.h"
 
 GpsAutoBaud::GpsAutoBaud(HardwareSerial &port, int rxPin, int txPin,
                          const int *baudList, size_t baudCount,
