@@ -1,3 +1,34 @@
+
+// To use this code, follow the calling fucntion below:
+
+// #include <Arduino.h>
+// #include "GPSAutoBaud.h"
+
+// // UART2: GPS.TX -> GPIO16 (RX2), GPS.RX -> GPIO17 (TX2, optional)
+// HardwareSerial GPS2(2);
+// static const int PIN_RX2 = 16;
+// static const int PIN_TX2 = 17;
+
+// // Candidate baud rates for u-blox NEO series (you can add/remove here)
+// static int kBauds[] = {9600, 38400, 57600, 115200, 4800};
+
+// GpsAutoBaud gpsAuto(GPS2, PIN_RX2, PIN_TX2, kBauds, sizeof(kBauds)/sizeof(kBauds[0]),
+//                     /*silenceMs=*/5000, /*maxLineLen=*/120);
+
+// void setup() {
+//   Serial.begin(115200);                    // USB logging
+//   Serial.println("\nAuto-bauding GPS on UART2...");
+//   gpsAuto.begin();                         // probe & lock
+// }
+
+// void loop() {
+//   // Flush full NMEA lines to Serial; auto re-probes if silent for too long
+//   gpsAuto.update(Serial);
+
+//   // (Optional) You can access the locked baud like this:
+//   // int cur = gpsAuto.currentBaud();
+// }
+
 #include "GPSAutoBaud.h"
 
 GpsAutoBaud::GpsAutoBaud(HardwareSerial &port, int rxPin, int txPin,
