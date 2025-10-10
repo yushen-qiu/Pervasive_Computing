@@ -1,4 +1,3 @@
-
 // To use this code, follow the calling fucntion below:
 
 // #include <Arduino.h>
