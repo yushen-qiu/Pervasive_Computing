@@ -46,3 +46,13 @@ ESP32-E project to build an interactive Gandalf staff.
 │── 📜 README.md
 │── 📜 .gitignore
 ```
+## Tools
+Format all C/C++ files in the repository
+```bash
+sudo apt update
+sudo apt install clang-format -y
+# for macOS: brew install clang-format
+# for Windows: winget install LLVM.LLVM
+
+find 01_Code/ -type f \( -name "*.c" -o -name "*.cpp" -o -name "*.h" -o -name "*.hpp" \) -exec clang-format -style=file -i {} +
+```
