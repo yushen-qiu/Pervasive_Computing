@@ -95,8 +95,8 @@
 //         }
 //     }
 
-//     // over 5 sec not meet '$'，Indicates serial port silence or baud rate mismatch; please retry detection.
-//     if (millis() - lastDollarMs > 5000)
+//     // over 5 sec not meet '$'，Indicates serial port silence or baud rate mismatch; please retry
+//     detection. if (millis() - lastDollarMs > 5000)
 //     {
 //         Serial.println("\n[Lost] No NMEA for 5s. Re-probing baud...");
 //         lockBaud();

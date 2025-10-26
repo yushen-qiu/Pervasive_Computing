@@ -60,7 +60,8 @@
 //         static uint32_t lastPrint = 0;
 //         if (millis() - lastPrint > 1000)
 //         {
-//             Serial.printf("[GPS] fix=%s, sats=%u, hdop=%.1f, speed=%.2f m/s, course=%.1f°, lat=%.5f, lon=%.5f\n",
+//             Serial.printf("[GPS] fix=%s, sats=%u, hdop=%.1f, speed=%.2f m/s, course=%.1f°,
+//             lat=%.5f, lon=%.5f\n",
 //                           gps.location.isValid() ? "OK" : "NO",
 //                           gps.satellites.value(),
 //                           gps.hdop.hdop(),
@@ -93,7 +94,8 @@
 //             // Set the main light and two auxiliary lights on either side.
 //             leds[center] = CHSV((uint8_t)(currentCourse / 2), 255, 255);
 //             leds[(center + 1) % NUM_LEDS] = CHSV((uint8_t)(currentCourse / 2), 255, 100);
-//             leds[(center + NUM_LEDS - 1) % NUM_LEDS] = CHSV((uint8_t)(currentCourse / 2), 255, 100);
+//             leds[(center + NUM_LEDS - 1) % NUM_LEDS] = CHSV((uint8_t)(currentCourse / 2), 255,
+//             100);
 
 //             // If the direction changes, print
 //             if (center != lastCenter)
@@ -119,7 +121,8 @@
 // void setup()
 // {
 //     Serial.begin(115200);
-//     GPS.begin(9600, SERIAL_8N1, 16, 17); // GPS.TX → GPIO16, GPS.RX → GPIO17 (may be left unconnected)
+//     GPS.begin(9600, SERIAL_8N1, 16, 17); // GPS.TX → GPIO16, GPS.RX → GPIO17 (may be left
+//     unconnected)
 
 //     FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
 //     FastLED.setBrightness(BRIGHTNESS);

@@ -1,8 +1,7 @@
 #pragma once
 #include <FastLED.h>
 
-namespace RainbowLED
-{
+namespace RainbowLED {
     void begin();
 
     void rainbow(uint8_t delayMs = 20);
@@ -10,4 +9,4 @@ namespace RainbowLED
     void solidColor(CRGB color);
 
     void setBrightness(uint8_t brightness);
-}
+} // namespace RainbowLED

@@ -2,11 +2,11 @@
 #define GPS_MODULE_H
 
 #include <Arduino.h>
-#include <TinyGPSPlus.h>
 #include <HardwareSerial.h>
+#include <TinyGPSPlus.h>
 
 extern HardwareSerial GPS;
-extern TinyGPSPlus gps;
+extern TinyGPSPlus    gps;
 
 extern volatile double currentCourse;
 extern volatile double currentSpeed;
@@ -14,6 +14,6 @@ extern volatile double currentLat;
 extern volatile double currentLng;
 
 void initGPS();
-void taskGPS(void *pvParameters);
+void taskGPS(void* pvParameters);
 
 #endif
