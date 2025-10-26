@@ -1,0 +1,46 @@
+# .clang-format
+BasedOnStyle: LLVM
+IndentWidth: 4
+TabWidth: 4
+UseTab: Never
+ColumnLimit: 100
+
+# --- Braces and Blocks ---
+BreakBeforeBraces: Attach
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortLoopsOnASingleLine: false
+
+# --- Spacing ---
+SpaceAfterCStyleCast: false
+SpacesInParentheses: false
+SpacesInAngles: false
+SpacesInContainerLiterals: false
+PointerAlignment: Left
+DerivePointerAlignment: false
+
+# --- Alignment ---
+AlignConsecutiveAssignments: true
+AlignConsecutiveDeclarations: true
+AlignEscapedNewlines: Right
+AlignTrailingComments: true
+
+# --- Includes ---
+SortIncludes: true
+IncludeBlocks: Regroup
+
+# --- Namespaces and Scopes ---
+NamespaceIndentation: All
+IndentCaseLabels: true
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# --- Comments ---
+ReflowComments: true
+CommentPragmas: "^ IWYU pragma:"
+
+# --- Misc ---
+Cpp11BracedListStyle: true
+ConstructorInitializerIndentWidth: 4
+ContinuationIndentWidth: 8
+BreakConstructorInitializers: BeforeColon
+AccessModifierOffset: -4
