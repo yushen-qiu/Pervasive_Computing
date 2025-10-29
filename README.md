@@ -14,8 +14,10 @@ ESP32-E project to build an interactive Gandalf staff.
 | Usage        | Left  | Right | Usage        |
 |--------------|-------|-------|--------------|
 | —            | —     | VCC   | —            |
-| —            | —     | 3V3   | —            |
-| —            | —     | GND   | —            |
+| —            | —     | 3V3   | Magnetometer |
+| —            | —     | GND   | Magnetometer |
+| —            | —     | SCL   | Magnetometer |
+| —            | —     | SDA   | Magnetometer |
 | —            | 18    | 22    | —            |
 | —            | 23    | 21    | —            |
 | —            | 19    | 15    | —            |

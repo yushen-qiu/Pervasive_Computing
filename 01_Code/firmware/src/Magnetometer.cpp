@@ -20,19 +20,19 @@ float northOffset = 0.0;  // degrees
 bool calibrating = true;
 unsigned long lastPrint = 0;
 
-// Generalize conversion of bearings to simple cardinal directions
+// Generalize conversion of bearings to simple cardinal directions (e.g. N,S,E,W)
 String getDirection(float heading) {
-  int sector = (int)((heading + 22.5)/45);
-  sector = sector % 8;
+  int sector = (int)((heading + 45)/90);
+  sector = sector % 4;
   switch (sector) {
     case 0: return "North";
-    case 1: return "North-East";
-    case 2: return "East";
-    case 3: return "South-East";
-    case 4: return "South";    
-    case 5: return "South-West";
-    case 6: return "West";
-    case 7: return "North-West";  
+    // case 1: return "North-East";
+    case 1: return "East";
+    // case 3: return "South-East";
+    case 2: return "South";    
+    // case 5: return "South-West";
+    case 3: return "West";
+    // case 7: return "North-West";  
     default: return "Unknown";
   }
 }
