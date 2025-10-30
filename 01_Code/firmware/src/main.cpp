@@ -1,21 +1,23 @@
-#include "./GPS/GPSModule.h"
-#include "./LED/LEDModule.h"
 
-#include <Arduino.h>
+// #include <Arduino.h>
+// #include "./GPS/GPSModule.h"
+// #include "./LED/LEDModule.h"
 
-void setup() {
-    Serial.begin(115200);
-    initGPS();
-    initLED();
+// void setup()
+// {
+//     Serial.begin(115200);
+//     initGPS();
+//     initLED();
 
-    Serial.println("GPS + LED Compass started. Move to open sky...");
+//     Serial.println("GPS + LED Compass started. Move to open sky...");
 
-    xTaskCreatePinnedToCore(taskGPS, "taskGPS", 4096, NULL, 2, NULL, 1);
-    xTaskCreatePinnedToCore(taskLED, "taskLED", 4096, NULL, 1, NULL, 0);
-}
+//     xTaskCreatePinnedToCore(taskGPS, "taskGPS", 4096, NULL, 2, NULL, 1);
+//     xTaskCreatePinnedToCore(taskLED, "taskLED", 4096, NULL, 1, NULL, 0);
+// }
 
-void loop() {}
-
+// void loop()
+// {
+// }
 
 // #include <WiFi.h>
 // #include "Weather.h"
@@ -26,11 +28,11 @@ void loop() {}
 // const char* ssid = "";
 // const char* password = "";
 
-// // Coordinates 
+// // Coordinates
 // double latitude = -33.8884;
 // double longitude = 151.1868;
 
-// // Button Config 
+// // Button Config
 // #define BUTTON_PIN 14
 // int buttonState;
 // int lastButtonState = HIGH;
@@ -85,16 +87,38 @@ void loop() {}
 // 		windowFinished = true;
 // 		Serial.println("Time's up! Final press count locked: " + String(pressCount));
 
-// 		// Fetch Weather 
+// 		// Fetch Weather
 // 		String weatherCondition, localTime;
 // 		fetchWeather(weatherCondition, localTime, latitude, longitude);
 
-// 		// Query Gemini 
+// 		// Query Gemini
 // 		String filteredPlaceTypes = queryGemini(weatherCondition, localTime);
 
-// 		// Query Places API 
+// 		// Query Places API
 // 		fetchNearbyPlace(filteredPlaceTypes, pressCount, latitude, longitude);
 // 	}
 
 // 	lastButtonState = reading;
 // }
+
+#include "./GPS/GPS_Coords/GPS_Coords.h"
+// #include "./LED/LEDModule.h"
+
+#include <Arduino.h>
+
+void setup() {
+    Serial.begin(115200);
+    Serial.println("GPS Coordinate Reader starting...");
+    GPS_Coords::begin(16, 17);
+}
+
+void loop() {
+    String coords = GPS_Coords::getCoordinates();
+    if (coords != "NO FIX") {
+        Serial.println(coords);
+    } else {
+        Serial.println("Waiting for GPS fix...");
+    }
+
+    delay(1000);
+}
