@@ -1,20 +1,23 @@
-#include "./GPS/GPSModule.h"
-#include "./LED/LEDModule.h"
 
-#include <Arduino.h>
+// #include <Arduino.h>
+// #include "./GPS/GPSModule.h"
+// #include "./LED/LEDModule.h"
 
-void setup() {
-    Serial.begin(115200);
-    initGPS();
-    initLED();
+// void setup()
+// {
+//     Serial.begin(115200);
+//     initGPS();
+//     initLED();
 
-    Serial.println("GPS + LED Compass started. Move to open sky...");
+//     Serial.println("GPS + LED Compass started. Move to open sky...");
 
-    xTaskCreatePinnedToCore(taskGPS, "taskGPS", 4096, NULL, 2, NULL, 1);
-    xTaskCreatePinnedToCore(taskLED, "taskLED", 4096, NULL, 1, NULL, 0);
-}
+//     xTaskCreatePinnedToCore(taskGPS, "taskGPS", 4096, NULL, 2, NULL, 1);
+//     xTaskCreatePinnedToCore(taskLED, "taskLED", 4096, NULL, 1, NULL, 0);
+// }
 
-void loop() {}
+// void loop()
+// {
+// }
 
 // #include <WiFi.h>
 // #include "Weather.h"
@@ -101,3 +104,15 @@ void loop() {}
 // 	lastButtonState = reading;
 // }
 
+
+#include "./GPS/GPS_Coords/GPS_Coords.h"
+
+void setup() {
+    Serial.begin(115200);
+}
+
+void loop() {
+    String coords = GPS_Coords();
+    Serial.println(coords);
+    delay(2000);
+}
