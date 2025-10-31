@@ -1,38 +1,39 @@
 #include "GPS_Coords.h"
 
-HardwareSerial GPS_Coords::GPS(2);
-TinyGPSPlus GPS_Coords::gps;
-int GPS_Coords::rxPin_ = 16;
-int GPS_Coords::txPin_ = 17;
+#include <HardwareSerial.h>
+#include <TinyGPSPlus.h>
 
-// ====================== initialise ======================
-void GPS_Coords::begin(int rxPin, int txPin)
-{
-    rxPin_ = rxPin;
-    txPin_ = txPin;
-    GPS.begin(115200, SERIAL_8N1, rxPin_, txPin_);
-    Serial.println("[GPS] Module initialised at 9600 baud.");
-}
+static const int      RXPin   = 16; // GPS TX -> ESP32 RX2
+static const int      TXPin   = 17; // GPS RX -> ESP32 TX2
+static const uint32_t GPSBaud = 9600;
 
-// ====================== get coords ======================
-String GPS_Coords::getCoordinates()
-{
-    while (GPS.available() > 0)
-    {
-        gps.encode(GPS.read());
+HardwareSerial GPS_Serial(2);
+TinyGPSPlus    gps;
+bool           gpsInitialized = false;
+
+String GPS_Coords() {
+    if (!gpsInitialized) {
+        GPS_Serial.begin(GPSBaud, SERIAL_8N1, RXPin, TXPin);
+        gpsInitialized = true;
     }
 
-    if (gps.location.isValid())
-    {
-        double lat = gps.location.lat();
-        double lon = gps.location.lng();
+    unsigned long       start   = millis();
+    const unsigned long timeout = 2000;
 
-        char buffer[40];
-        snprintf(buffer, sizeof(buffer), "%.6f, %.6f", lat, lon);
-        return String(buffer);
+    while (millis() - start < timeout) {
+        while (GPS_Serial.available() > 0) {
+            gps.encode(GPS_Serial.read());
+        }
+
+        if (gps.location.isUpdated() && gps.location.isValid()) {
+            double lat = gps.location.lat();
+            double lng = gps.location.lng();
+
+            char buffer[50];
+            snprintf(buffer, sizeof(buffer), "%.6f, %.6f", lat, lng);
+            return String(buffer);
+        }
     }
-    else
-    {
-        return String("NO FIX");
-    }
+
+    return String("No Fix");
 }

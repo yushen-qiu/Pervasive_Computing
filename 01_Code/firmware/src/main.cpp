@@ -102,23 +102,13 @@
 // }
 
 #include "./GPS/GPS_Coords/GPS_Coords.h"
-// #include "./LED/LEDModule.h"
-
-#include <Arduino.h>
 
 void setup() {
     Serial.begin(115200);
-    Serial.println("GPS Coordinate Reader starting...");
-    GPS_Coords::begin(16, 17);
 }
 
 void loop() {
-    String coords = GPS_Coords::getCoordinates();
-    if (coords != "NO FIX") {
-        Serial.println(coords);
-    } else {
-        Serial.println("Waiting for GPS fix...");
-    }
-
-    delay(1000);
+    String coords = GPS_Coords();
+    Serial.println(coords);
+    delay(2000);
 }
