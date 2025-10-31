@@ -16,7 +16,7 @@ String queryGemini(String weatherCondition, String localTime) {
 	if (WiFi.status() != WL_CONNECTED) return "";
 
 	HTTPClient http;
-	http.setTimeout(20000);
+	http.setTimeout(30000);
 	String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + String(geminiApiKey);
 	http.begin(url);
 	http.addHeader("Content-Type", "application/json");
@@ -45,7 +45,7 @@ String queryGemini(String weatherCondition, String localTime) {
 		if (!err && !doc["candidates"][0]["content"]["parts"][0]["text"].isNull()) {
 			responseStr = String(doc["candidates"][0]["content"]["parts"][0]["text"].as<const char*>());
 			responseStr.replace("\n", "");
-			responseStr.trim();
+			responseStr.trim();                  
 			Serial.println("Gemini selected place types: " + responseStr);
 		} else {
 			Serial.println("Error parsing Gemini response");

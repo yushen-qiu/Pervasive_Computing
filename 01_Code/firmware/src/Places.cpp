@@ -4,16 +4,17 @@
 
 const char* placesApiKey = "";
 
-void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double lng) {
+void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double lng, double &destinationLatitude, double &destinationLongitude) {
 	if (WiFi.status() != WL_CONNECTED) return;
 
 	HTTPClient http;
 	String includedTypesJson = includedTypes;
+
 	String requestBody = "{"
 		"\"locationRestriction\": {"
 			"\"circle\": {"
 				"\"center\": {\"latitude\": " + String(lat, 6) + ", \"longitude\": " + String(lng, 6) + "},"
-				"\"radius\": " + String(pressCount * 500) +
+				"\"radius\": " + String(pressCount * 250) +
 			"}"
 		"},"
 		"\"includedTypes\": " + includedTypesJson + ","
@@ -28,17 +29,23 @@ void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double l
 	http.addHeader("X-Goog-FieldMask", "places.displayName,places.formattedAddress,places.types,places.location");
 
 	int httpCode = http.POST(requestBody);
+
 	if (httpCode > 0) {
 		String payload = http.getString();
 		JsonDocument doc;
-		deserializeJson(doc, payload);
+		DeserializationError err = deserializeJson(doc, payload);
 
-		double placeLat = doc["places"][0]["location"]["latitude"];
-		double placeLng = doc["places"][0]["location"]["longitude"];
-		Serial.printf("Nearby place: %.6f, %.6f\n", placeLat, placeLng);
+		if (!err && !doc["places"][0]["location"].isNull()) {
+			destinationLatitude = doc["places"][0]["location"]["latitude"];
+			destinationLongitude = doc["places"][0]["location"]["longitude"];
+			Serial.printf("Nearby place: %.6f, %.6f\n", destinationLatitude, destinationLongitude);
+		} else {
+			Serial.println("Error parsing Places API response");
+		}
 	} else {
 		Serial.println("Error fetching Places API");
 	}
 
 	http.end();
 }
+

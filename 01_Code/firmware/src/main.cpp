@@ -16,7 +16,6 @@ void setup() {
 
 void loop() {}
 
-
 // #include <WiFi.h>
 // #include "Weather.h"
 // #include "AI.h"
@@ -29,6 +28,9 @@ void loop() {}
 // // Coordinates 
 // double latitude = -33.8884;
 // double longitude = 151.1868;
+
+// double destinationLatitude;
+// double destinationLongitude;
 
 // // Button Config 
 // #define BUTTON_PIN 14
@@ -70,7 +72,7 @@ void loop() {}
 // 				if (!countingActive && !windowFinished) {
 // 					countingActive = true;
 // 					startTime = millis();
-// 					pressCount = 1;
+// 					pressCount = 0;
 // 					Serial.println("Started 5-second counting window!");
 // 				} else if (countingActive) {
 // 					pressCount++;
@@ -93,8 +95,9 @@ void loop() {}
 // 		String filteredPlaceTypes = queryGemini(weatherCondition, localTime);
 
 // 		// Query Places API 
-// 		fetchNearbyPlace(filteredPlaceTypes, pressCount, latitude, longitude);
+// 		fetchNearbyPlace(filteredPlaceTypes, pressCount, latitude, longitude, destinationLatitude, destinationLongitude);
 // 	}
 
 // 	lastButtonState = reading;
 // }
+
