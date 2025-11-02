@@ -35,6 +35,6 @@ namespace Config {
     // GPS (for simple GPS_Coords demo)
     static const int           GPS_RX_PIN         = 16;
     static const int           GPS_TX_PIN         = 17;
-    static const uint32_t      GPS_BAUD           = 9600;
+    static const unsigned long GPS_BAUD           = 9600;
     static const unsigned long GPS_FIX_TIMEOUT_MS = 2000;
 } // namespace Config
