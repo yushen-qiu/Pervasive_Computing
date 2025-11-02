@@ -1,5 +1,11 @@
 # Magnetometer
-Instructions for MMC5603 magnetometer module 
+Instructions for MMC5603 magnetometer module
+
+**Magnetometer.h**: Header file for module
+
+**Magnetometer.cpp**: Magnetometer logic
+
+**MMC5603.cpp**: Standalone magnetometer code (Original file)
 
 ## Initial Calibration
 1. After upload and connection, slowly rotate the magnetometer around the x and z axis
