@@ -5,7 +5,7 @@
 #include <net/WeatherClient.h>
 #include <net/WiFiUtil.h>
 #include <sensors/LightSensor.h>
-#include <sensors/GPSModule.h>
+#include <sensors/GPS_Coords.h>
 
 void App::begin() {
     Serial.begin(115200);
@@ -19,9 +19,7 @@ void App::begin() {
     // Start light sensor calibration (5s)
     LightSensor::begin(5000);
 
-    // Start GPS (serial + background task)
-    initGPS();
-    xTaskCreate(taskGPS, "GPS", 4096, nullptr, 1, nullptr);
+    // Using on-demand GPS fix via GPS_Coords() in runFlow(); no background task here
 }
 
 void App::tick() {
@@ -74,14 +72,25 @@ void App::tick() {
 }
 
 void App::runFlow() {
-    // Use GPS coordinates if we have a valid fix; otherwise fall back to defaults
+    // Use GPS_Coords() to fetch a fix on demand; fall back to defaults
     double latitude  = Config::DEFAULT_LAT;
     double longitude = Config::DEFAULT_LNG;
-
-    GpsFix fix;
-    if (getLatestFix(fix) && fix.valid) {
-        latitude  = fix.lat;
-        longitude = fix.lng;
+    
+    String coordsStr = GPS_Coords();
+    if (coordsStr != "No Fix") {
+        int comma = coordsStr.indexOf(',');
+        if (comma > 0) {
+            String latStr = coordsStr.substring(0, comma);
+            String lngStr = coordsStr.substring(comma + 1);
+            latStr.trim();
+            lngStr.trim();
+            double latCandidate = latStr.toDouble();
+            double lngCandidate = lngStr.toDouble();
+            if (!isnan(latCandidate) && !isnan(lngCandidate)) {
+                latitude  = latCandidate;
+                longitude = lngCandidate;
+            }
+        }
     }
 
     // Fetch Weather
