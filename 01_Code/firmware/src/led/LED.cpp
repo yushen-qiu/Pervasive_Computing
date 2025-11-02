@@ -24,15 +24,16 @@ void taskLED(void* pvParameters) {
     for (;;) {
         FastLED.clear();
 
-        if (gps.location.isValid() && gps.course.isValid() && currentCourse > 0) {
-            int center = (bearingToIndex(currentCourse) + NORTH_OFFSET) % NUM_LEDS;
+        GpsFix fix;
+        if (getLatestFix(fix) && fix.course_deg > 0) {
+            int center = (bearingToIndex(fix.course_deg) + NORTH_OFFSET) % NUM_LEDS;
 
-            leds[center]                             = CHSV((uint8_t)(currentCourse / 2), 255, 255);
-            leds[(center + 1) % NUM_LEDS]            = CHSV((uint8_t)(currentCourse / 2), 255, 100);
-            leds[(center + NUM_LEDS - 1) % NUM_LEDS] = CHSV((uint8_t)(currentCourse / 2), 255, 100);
+            leds[center]                             = CHSV((uint8_t)(fix.course_deg / 2), 255, 255);
+            leds[(center + 1) % NUM_LEDS]            = CHSV((uint8_t)(fix.course_deg / 2), 255, 100);
+            leds[(center + NUM_LEDS - 1) % NUM_LEDS] = CHSV((uint8_t)(fix.course_deg / 2), 255, 100);
 
             if (center != lastCenter) {
-                Serial.printf("[LED] Heading %.1f° -> LED #%d (North offset %d)\n", currentCourse,
+                Serial.printf("[LED] Heading %.1f° -> LED #%d (North offset %d)\n", fix.course_deg,
                               center, NORTH_OFFSET);
                 lastCenter = center;
             }

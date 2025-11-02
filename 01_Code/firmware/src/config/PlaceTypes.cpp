@@ -1,4 +1,3 @@
-// Definition of centralized Google Places types list
 #include <config/PlaceTypes.h>
 
 namespace Config {
@@ -35,5 +34,4 @@ namespace Config {
                                        "zoo"};
 
     const size_t PLACE_TYPES_COUNT = sizeof(PLACE_TYPES) / sizeof(PLACE_TYPES[0]);
-
 } // namespace Config

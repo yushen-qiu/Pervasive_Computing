@@ -5,6 +5,7 @@
 #include <net/WeatherClient.h>
 #include <net/WiFiUtil.h>
 #include <sensors/LightSensor.h>
+#include <sensors/GPSModule.h>
 
 void App::begin() {
     Serial.begin(115200);
@@ -17,13 +18,16 @@ void App::begin() {
 
     // Start light sensor calibration (5s)
     LightSensor::begin(5000);
+
+    // Start GPS (serial + background task)
+    initGPS();
+    xTaskCreate(taskGPS, "GPS", 4096, nullptr, 1, nullptr);
 }
 
 void App::tick() {
     // Update light sensor reading and log periodically
     LightSensor::tick();
     if (millis() - lastLightPrint_ > 1000) {
-        Serial.printf("[Light] raw=%d percent=%d%%\n", LightSensor::raw(), LightSensor::percent());
         lastLightPrint_ = millis();
     }
 
@@ -70,9 +74,15 @@ void App::tick() {
 }
 
 void App::runFlow() {
-    // Coordinates can come from GPS later; use defaults for now
-    const double latitude  = Config::DEFAULT_LAT;
-    const double longitude = Config::DEFAULT_LNG;
+    // Use GPS coordinates if we have a valid fix; otherwise fall back to defaults
+    double latitude  = Config::DEFAULT_LAT;
+    double longitude = Config::DEFAULT_LNG;
+
+    GpsFix fix;
+    if (getLatestFix(fix) && fix.valid) {
+        latitude  = fix.lat;
+        longitude = fix.lng;
+    }
 
     // Fetch Weather
     String weatherCondition, localTime;
