@@ -2,18 +2,24 @@
 #define GPS_MODULE_H
 
 #include <Arduino.h>
-#include <HardwareSerial.h>
-#include <TinyGPSPlus.h>
 
-extern HardwareSerial GPS;
-extern TinyGPSPlus    gps;
+// Snapshot of the latest GPS state (thread-safe accessor provided below)
+struct GpsFix {
+    bool   valid      = false;  // true if we have a valid location fix
+    double lat        = 0.0;    // degrees
+    double lng        = 0.0;    // degrees
+    double speed_mps  = 0.0;    // metres per second
+    double course_deg = 0.0;    // degrees (0..360)
+};
 
-extern volatile double currentCourse;
-extern volatile double currentSpeed;
-extern volatile double currentLat;
-extern volatile double currentLng;
-
+// Initialize GPS serial and hardware
 void initGPS();
+
+// FreeRTOS task that continuously reads and parses GPS data
 void taskGPS(void* pvParameters);
+
+// Thread-safe accessor: copies the latest fix into 'out'.
+// Returns 'true' if out.valid is true (valid location available).
+bool getLatestFix(GpsFix& out);
 
 #endif
