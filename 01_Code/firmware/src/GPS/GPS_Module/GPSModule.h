@@ -1,6 +1,4 @@
-#ifndef GPS_MODULE_H
-#define GPS_MODULE_H
-
+#pragma once
 #include <Arduino.h>
 #include <HardwareSerial.h>
 #include <TinyGPSPlus.h>
@@ -15,5 +13,3 @@ extern volatile double currentLng;
 
 void initGPS();
 void taskGPS(void* pvParameters);
-
-#endif

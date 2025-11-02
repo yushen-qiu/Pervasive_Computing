@@ -1,19 +1,22 @@
 #include "GPS_Coords.h"
 
+#include "GPS/GPS_Module/GPSModule.h"
+
 #include <HardwareSerial.h>
 #include <TinyGPSPlus.h>
+
+// HardwareSerial GPS(2);
+// TinyGPSPlus    gps;
 
 static const int      RXPin   = 16; // GPS TX -> ESP32 RX2
 static const int      TXPin   = 17; // GPS RX -> ESP32 TX2
 static const uint32_t GPSBaud = 9600;
 
-HardwareSerial GPS_Serial(2);
-TinyGPSPlus    gps;
-bool           gpsInitialized = false;
+bool gpsInitialized = false;
 
 String GPS_Coords() {
     if (!gpsInitialized) {
-        GPS_Serial.begin(GPSBaud, SERIAL_8N1, RXPin, TXPin);
+        GPS.begin(GPSBaud, SERIAL_8N1, RXPin, TXPin);
         gpsInitialized = true;
     }
 
@@ -21,8 +24,8 @@ String GPS_Coords() {
     const unsigned long timeout = 2000;
 
     while (millis() - start < timeout) {
-        while (GPS_Serial.available() > 0) {
-            gps.encode(GPS_Serial.read());
+        while (GPS.available() > 0) {
+            gps.encode(GPS.read());
         }
 
         if (gps.location.isUpdated() && gps.location.isValid()) {

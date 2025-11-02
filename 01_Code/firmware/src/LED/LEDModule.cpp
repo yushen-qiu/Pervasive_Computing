@@ -1,13 +1,8 @@
 #include "LEDModule.h"
 
-// CRGB leds[NUM_LEDS];
-const int NORTH_OFFSET = 4;
+CRGB leds[NUM_LEDS];
 
-int bearingToIndex(double bearingDeg) {
-    int idx = (int)round((bearingDeg / 360.0) * NUM_LEDS) % NUM_LEDS;
-    return idx;
-}
-
+// init
 void initLED() {
     FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
     FastLED.setBrightness(BRIGHTNESS);
@@ -15,32 +10,47 @@ void initLED() {
     FastLED.show();
 }
 
-void taskLED(void* pvParameters) {
-    (void)pvParameters;
-    uint8_t    hue        = 0;
-    static int lastCenter = -1;
+// clear ring
+void clearLED() {
+    fill_solid(leds, NUM_LEDS, CRGB::Black);
+    FastLED.show();
+}
 
-    for (;;) {
-        FastLED.clear();
+void showDirection(double bearingDeg) {
+    FastLED.clear();
 
-        if (gps.location.isValid() && gps.course.isValid() && currentCourse > 0) {
-            int center = (bearingToIndex(currentCourse) + NORTH_OFFSET) % NUM_LEDS;
+    // -------------------------------
+    // angle determine（centre ±45°）
+    // -------------------------------
+    // north 315–360 / 0–45
+    // east 45–135
+    // south 135–225
+    // west 225–315
+    int direction = -1; // 0=N, 1=E, 2=S, 3=W
 
-            leds[center]                             = CHSV((uint8_t)(currentCourse / 2), 255, 255);
-            leds[(center + 1) % NUM_LEDS]            = CHSV((uint8_t)(currentCourse / 2), 255, 100);
-            leds[(center + NUM_LEDS - 1) % NUM_LEDS] = CHSV((uint8_t)(currentCourse / 2), 255, 100);
+    if (bearingDeg >= 315 || bearingDeg < 45)
+        direction = 0; // n
+    else if (bearingDeg >= 45 && bearingDeg < 135)
+        direction = 1; // e
+    else if (bearingDeg >= 135 && bearingDeg < 225)
+        direction = 2; // s
+    else if (bearingDeg >= 225 && bearingDeg < 315)
+        direction = 3; // w
 
-            if (center != lastCenter) {
-                Serial.printf("[LED] Heading %.1f° -> LED #%d (North offset %d)\n", currentCourse,
-                              center, NORTH_OFFSET);
-                lastCenter = center;
-            }
-        } else {
-            fill_rainbow(leds, NUM_LEDS, hue++, 8);
-            Serial.println("[LED] No valid GPS direction yet... showing rainbow.");
-        }
+    // -------------------------------
+    // corr led index
+    // -------------------------------
+    int startIndex = direction * 4; // 4 ea
+    for (int i = 0; i < 4; i++) {
+        leds[(startIndex + i) % NUM_LEDS] = CRGB::Blue; // change colour
+    }
 
-        FastLED.show();
-        vTaskDelay(500 / portTICK_PERIOD_MS);
+    FastLED.show();
+
+    const char* dirName[] = {"North", "East", "South", "West"};
+    if (direction >= 0) {
+        Serial.printf("[LED] Direction: %s (%.1f°)\n", dirName[direction], bearingDeg);
+    } else {
+        Serial.printf("[LED] Unknown direction: %.1f°\n", bearingDeg);
     }
 }

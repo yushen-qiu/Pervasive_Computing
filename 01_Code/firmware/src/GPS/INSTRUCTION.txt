@@ -1,0 +1,45 @@
+To get direction from gps based on led, simply c&p code below to main
+
+#include "GPS/GPS_Direction/GPS_Direction.h"
+#include "GPS/GPS_Module/GPSModule.h"
+#include "LED/LEDModule.h"
+
+#include <Arduino.h>
+
+void setup() {
+    Serial.begin(115200);
+    delay(2000);
+    Serial.println("\n=== GPS Direction System ===");
+
+    initGPS();
+    initLED();
+
+    xTaskCreatePinnedToCore(taskGPS, "GPS Task", 4096, NULL, 1, NULL, 0);
+}
+
+void loop() {
+    GPS_UpdateDirection();
+    delay(1000);
+}
+
+--------------------------------------
+
+to get coords connect the neo16 gps module with firebeetle esp32-e by the following:
+1. RX -> GPIO17 (unnnecessary)
+2. TX -> GPIO16
+3. VCC -> VCC
+3. GND -> GND
+
+this is for printing all the info regarding gps coordinates from the satellite.
+to use this code, simply calling GPSManager on main.cpp like:
+#include "./GPS/GPS_Coords/GPS_Coords.h"
+
+void setup() {
+    Serial.begin(115200);
+}
+
+void loop() {
+    String coords = GPS_Coords();
+    Serial.println(coords);
+    delay(2000);
+}

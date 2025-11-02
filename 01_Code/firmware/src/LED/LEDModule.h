@@ -1,7 +1,5 @@
-#ifndef LED_MODULE_H
-#define LED_MODULE_H
-
-#include "../GPS/GPSModule.h"
+#pragma once
+#include "GPS/GPS_Module/GPSModule.h"
 
 #include <Arduino.h>
 #include <FastLED.h>
@@ -12,10 +10,8 @@
 #define COLOR_ORDER GRB
 #define BRIGHTNESS 150
 
-extern CRGB      leds[NUM_LEDS];
-extern const int NORTH_OFFSET;
+extern CRGB leds[NUM_LEDS];
 
 void initLED();
-void taskLED(void* pvParameters);
-
-#endif
+void clearLED();
+void showDirection(double bearingDeg);

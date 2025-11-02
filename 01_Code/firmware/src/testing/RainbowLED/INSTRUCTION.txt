@@ -1,13 +1,12 @@
-c&p the code below to use LED
+c&p the code below to use LED, connect singal to pin GPIO 4
 
-#include "./testing/GPS_Coordinates/RainbowLED.h"
 
-void setup()
-{
+#include "./testing/RainbowLED/RainbowLED.h"
+
+void setup() {
     RainbowLED::begin();
 }
 
-void loop()
-{
-    RainbowLED::update();
+void loop() {
+    RainbowLED::rainbow(20);
 }

@@ -1,24 +1,3 @@
-
-// #include <Arduino.h>
-// #include "./GPS/GPSModule.h"
-// #include "./LED/LEDModule.h"
-
-// void setup()
-// {
-//     Serial.begin(115200);
-//     initGPS();
-//     initLED();
-
-//     Serial.println("GPS + LED Compass started. Move to open sky...");
-
-//     xTaskCreatePinnedToCore(taskGPS, "taskGPS", 4096, NULL, 2, NULL, 1);
-//     xTaskCreatePinnedToCore(taskLED, "taskLED", 4096, NULL, 1, NULL, 0);
-// }
-
-// void loop()
-// {
-// }
-
 // #include <WiFi.h>
 // #include "Weather.h"
 // #include "AI.h"
@@ -28,14 +7,14 @@
 // const char* ssid = "";
 // const char* password = "";
 
-// // Coordinates 
+// // Coordinates
 // double latitude = -33.8884;
 // double longitude = 151.1868;
 
 // double destinationLatitude;
 // double destinationLongitude;
 
-// // Button Config 
+// // Button Config
 // #define BUTTON_PIN 14
 // int buttonState;
 // int lastButtonState = HIGH;
@@ -90,19 +69,21 @@
 // 		windowFinished = true;
 // 		Serial.println("Time's up! Final press count locked: " + String(pressCount));
 
-// 		// Fetch Weather 
+// 		// Fetch Weather
 // 		String weatherCondition, localTime;
 // 		fetchWeather(weatherCondition, localTime, latitude, longitude);
 
-// 		// Query Gemini 
+// 		// Query Gemini
 // 		String filteredPlaceTypes = queryGemini(weatherCondition, localTime);
 
-// 		// Query Places API 
-// 		fetchNearbyPlace(filteredPlaceTypes, pressCount, latitude, longitude, destinationLatitude, destinationLongitude);
+// 		// Query Places API
+// 		fetchNearbyPlace(filteredPlaceTypes, pressCount, latitude, longitude, destinationLatitude,
+// destinationLongitude);
 // 	}
 
 // 	lastButtonState = reading;
 // }
+<<<<<<< HEAD
 
 #include "Magnetometer/Magnetometer.h"
 #include "GPS/GPS_Coords/GPS_Coords.h"
@@ -121,3 +102,5 @@ void loop() {
     
     delay(2000);
 }
+=======
+>>>>>>> c99e27b (add gps direction)
