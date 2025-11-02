@@ -1,3 +1,4 @@
+// moved to examples/testing
 #include "GpsTracker.h"
 
 #include <math.h>

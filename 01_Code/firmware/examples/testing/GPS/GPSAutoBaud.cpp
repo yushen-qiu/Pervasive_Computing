@@ -1,3 +1,4 @@
+// moved to examples/testing
 #include "GPSAutoBaud.h"
 
 GpsAutoBaud::GpsAutoBaud(HardwareSerial& port, int rxPin, int txPin, const int* baudList,

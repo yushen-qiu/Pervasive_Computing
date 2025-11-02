@@ -1,3 +1,4 @@
+// moved to examples/testing
 #include "GPSManager.h"
 
 HardwareSerial GPS2(2);

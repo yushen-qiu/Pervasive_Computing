@@ -1,3 +1,4 @@
+// moved to examples/testing
 // #include <Arduino.h>
 
 // // UART2: GPS.TX -> GPIO16 (RX2), GPS.RX -> GPIO17 (TX2, optional)

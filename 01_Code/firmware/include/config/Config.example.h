@@ -11,6 +11,12 @@ static const char* GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
 static const char* PLACES_API_KEY = "YOUR_PLACES_API_KEY";
 static const char* WEATHER_API_KEY = "YOUR_WEATHER_API_KEY";
 
+// Service URLs and identifiers
+static const char* URL_GEMINI_BASE           = "https://generativelanguage.googleapis.com/v1beta";
+static const char* GEMINI_MODEL              = "gemini-2.5-flash";
+static const char* URL_PLACES_SEARCH_NEARBY  = "https://places.googleapis.com/v1/places:searchNearby";
+static const char* URL_WEATHER_CURRENT       = "http://api.weatherapi.com/v1/current.json";
+
 // App pins
 static const int BUTTON_PIN = 14;  // Default button pin
 

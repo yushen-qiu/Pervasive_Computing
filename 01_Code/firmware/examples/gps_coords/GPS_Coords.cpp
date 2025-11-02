@@ -1,4 +1,4 @@
-#include <GPS/GPS_Coords/GPS_Coords.h>
+#include "GPS_Coords.h"
 
 #include <HardwareSerial.h>
 #include <TinyGPSPlus.h>

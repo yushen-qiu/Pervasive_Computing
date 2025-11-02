@@ -10,3 +10,4 @@ namespace RainbowLED {
 
     void setBrightness(uint8_t brightness);
 } // namespace RainbowLED
+

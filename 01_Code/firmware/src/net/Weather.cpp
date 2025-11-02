@@ -1,4 +1,4 @@
-#include <Weather.h>
+#include <net/Weather.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
@@ -9,7 +9,7 @@ void fetchWeather(String &condition, String &localTime, double lat, double lng) 
 
 	HTTPClient http;
     http.setTimeout(Config::HTTP_TIMEOUT_MS);
-	String url = "http://api.weatherapi.com/v1/current.json?key=" + String(Config::WEATHER_API_KEY) +
+	String url = String(Config::URL_WEATHER_CURRENT) + "?key=" + String(Config::WEATHER_API_KEY) +
 				 "&q=" + String(lat, 6) + "," + String(lng, 6);
 	http.begin(url);
 	int httpCode = http.GET();

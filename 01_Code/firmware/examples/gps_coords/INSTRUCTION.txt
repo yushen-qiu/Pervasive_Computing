@@ -6,7 +6,7 @@ PLZ connect the neo16 gps module with firebeetle esp32-e by the following:
 
 this is for printing all the info regarding gps coordinates from the satellite.
 to use this code, simply calling GPSManager on main.cpp like:
-#include "./GPS/GPS_Coords/GPS_Coords.h"
+#include "GPS_Coords.h"
 
 void setup() {
     Serial.begin(115200);

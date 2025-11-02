@@ -1,4 +1,4 @@
-#include <Places.h>
+#include <net/Places.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
@@ -24,7 +24,7 @@ void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double l
 
 	Serial.println(requestBody);
 
-	http.begin("https://places.googleapis.com/v1/places:searchNearby");
+	http.begin(Config::URL_PLACES_SEARCH_NEARBY);
 	http.addHeader("Content-Type", "application/json");
 	http.addHeader("X-Goog-Api-Key", Config::PLACES_API_KEY);
 	http.addHeader("X-Goog-FieldMask", "places.displayName,places.formattedAddress,places.types,places.location");

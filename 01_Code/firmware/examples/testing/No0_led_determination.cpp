@@ -1,3 +1,4 @@
+// moved to examples/testing
 // // test num0 led
 // #include <FastLED.h>
 // #define LED_PIN 4
