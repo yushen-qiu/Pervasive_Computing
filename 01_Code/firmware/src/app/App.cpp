@@ -4,6 +4,7 @@
 #include <net/PlacesClient.h>
 #include <net/WeatherClient.h>
 #include <net/WiFiUtil.h>
+#include <sensors/LightSensor.h>
 
 void App::begin() {
     Serial.begin(115200);
@@ -13,9 +14,19 @@ void App::begin() {
     // Connect WiFi (non-blocking beyond configured timeout)
     (void)WiFiUtil::connect(Config::WIFI_SSID, Config::WIFI_PASSWORD,
                             Config::WIFI_CONNECT_TIMEOUT_MS);
+
+    // Start light sensor calibration (5s)
+    LightSensor::begin(5000);
 }
 
 void App::tick() {
+    // Update light sensor reading and log periodically
+    LightSensor::tick();
+    if (millis() - lastLightPrint_ > 1000) {
+        Serial.printf("[Light] raw=%d percent=%d%%\n", LightSensor::raw(), LightSensor::percent());
+        lastLightPrint_ = millis();
+    }
+
     int reading = digitalRead(Config::BUTTON_PIN);
 
     if (reading != lastButtonState_) {

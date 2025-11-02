@@ -16,7 +16,8 @@ namespace Config {
     static const char* URL_WEATHER_CURRENT = "http://api.weatherapi.com/v1/current.json";
 
     // App pins
-    static const int BUTTON_PIN = 14; // Default button pin
+    static const int BUTTON_PIN       = 14; // Default button pin
+    static const int LIGHT_SENSOR_PIN = 36; // ADC input (GPIO36)
 
     // Defaults
     static const double DEFAULT_LAT = -33.8884;

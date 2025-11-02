@@ -18,6 +18,7 @@ private:
     bool          countingActive_   = false;
     unsigned long startTime_        = 0;
     bool          windowFinished_   = false;
+    unsigned long lastLightPrint_   = 0;
 
     // last destination (for logging)
     double destLat_ = 0;
