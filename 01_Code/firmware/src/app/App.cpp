@@ -1,13 +1,13 @@
 #include <app/App.h>
 #include <config/Config.h>
+#include <led/LEDModule.h>
 #include <net/AiClient.h>
 #include <net/PlacesClient.h>
 #include <net/WeatherClient.h>
 #include <net/WiFiUtil.h>
-#include <sensors/GPS_Coords.h>
+#include <sensors/GPSModule.h>
 #include <sensors/LightSensor.h>
 #include <sensors/Magnetometer.h>
-#include <led/LEDModule.h>
 
 void App::begin() {
     Serial.begin(115200);
@@ -20,6 +20,10 @@ void App::begin() {
 
     // Start light sensor calibration (5s)
     LightSensor::begin(5000);
+
+    // Start GPS background reader (for continuous fixes)
+    initGPS();
+    xTaskCreate(taskGPS, "GPS", 4096, nullptr, 1, nullptr);
 
     // Start magnetometer and LED heading indicator
     if (!Magnetometer::begin()) {
@@ -93,26 +97,13 @@ void App::tick() {
 }
 
 void App::runFlow() {
-    // Use GPS_Coords() to fetch a fix on demand; fall back to defaults
+    // Use latest GPS fix if available; fall back to defaults
     double latitude  = Config::DEFAULT_LAT;
     double longitude = Config::DEFAULT_LNG;
-
-    String coordsStr = GPS_Coords();
-    if (coordsStr != "No Fix") {
-        int comma = coordsStr.indexOf(',');
-        if (comma > 0) {
-            String latStr = coordsStr.substring(0, comma);
-            String lngStr = coordsStr.substring(comma + 1);
-            latStr.trim();
-            lngStr.trim();
-            double latCandidate = latStr.toDouble();
-            double lngCandidate = lngStr.toDouble();
-            if (!isnan(latCandidate) && !isnan(lngCandidate)) {
-                Serial.printf("Updated the latitude and longitude");
-                latitude  = latCandidate;
-                longitude = lngCandidate;
-            }
-        }
+    GpsFix fix;
+    if (getLatestFix(fix) && fix.valid) {
+        latitude  = fix.lat;
+        longitude = fix.lng;
     }
 
     // Fetch Weather
@@ -128,17 +119,18 @@ void App::runFlow() {
     if (destLat_ != 0 || destLng_ != 0) {
         Serial.printf("Destination: %.6f, %.6f\n", destLat_, destLng_);
         // Compute absolute bearing from current position to destination and pass to LED
-        constexpr double DEG2RAD = 0.017453292519943295; // pi/180
-        constexpr double RAD2DEG = 57.29577951308232;    // 180/pi
-        auto deg2rad             = [](double d) { return d * DEG2RAD; };
-        auto rad2deg             = [](double r) { return r * RAD2DEG; };
-        double phi1  = deg2rad(latitude);
-        double phi2  = deg2rad(destLat_);
-        double dLon  = deg2rad(destLng_ - longitude);
-        double y     = sin(dLon) * cos(phi2);
-        double x     = cos(phi1) * sin(phi2) - sin(phi1) * cos(phi2) * cos(dLon);
-        double brng  = atan2(y, x);
-        double bearingDeg = fmod(rad2deg(brng) + 360.0, 360.0);
+        constexpr double DEG2RAD    = 0.017453292519943295; // pi/180
+        constexpr double RAD2DEG    = 57.29577951308232;    // 180/pi
+        auto             deg2rad    = [](double d) { return d * DEG2RAD; };
+        auto             rad2deg    = [](double r) { return r * RAD2DEG; };
+        double           phi1       = deg2rad(latitude);
+        double           phi2       = deg2rad(destLat_);
+        double           dLon       = deg2rad(destLng_ - longitude);
+        double           y          = sin(dLon) * cos(phi2);
+        double           x          = cos(phi1) * sin(phi2) - sin(phi1) * cos(phi2) * cos(dLon);
+        double           brng       = atan2(y, x);
+        double           bearingDeg = fmod(rad2deg(brng) + 360.0, 360.0);
         setTargetBearing(bearingDeg);
+        setTargetCoords(destLat_, destLng_);
     }
 }

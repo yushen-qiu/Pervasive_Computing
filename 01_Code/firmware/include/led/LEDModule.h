@@ -17,4 +17,7 @@ void taskLED(void* pvParameters);
 // Alternatively, set the absolute bearing to the target (degrees from true north)
 void setTargetBearing(double bearingDeg);
 
+// Provide target coordinates so LED can compute distance to target
+void setTargetCoords(double latDeg, double lngDeg);
+
 #endif
