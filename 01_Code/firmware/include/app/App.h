@@ -23,7 +23,7 @@ private:
     // Optional manual magnetometer calibration (triggered from App)
     bool          magCalibrating_     = false;
     unsigned long magCalibStartMs_    = 0;
-    unsigned long magCalibDurationMs_ = 10000; // 10s
+    unsigned long magCalibDurationMs_ = 20000; // 20s
 
     // last destination (for logging)
     double destLat_ = 0;
