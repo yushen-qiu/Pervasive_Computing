@@ -2,37 +2,8 @@
 #include <HTTPClient.h>
 #include <WiFi.h>
 #include <config/Config.h>
+#include <config/PlaceTypes.h>
 #include <net/AiClient.h>
-
-const char* allPlaceTypes[] = {"beach",
-                               "art_gallery",
-                               "cultural_landmark",
-                               "historical_place",
-                               "monument",
-                               "museum",
-                               "sculpture",
-                               "amphitheatre",
-                               "amusement_center",
-                               "amusement_park",
-                               "botanical_garden",
-                               "cultural_center",
-                               "dog_park",
-                               "ferris_wheel",
-                               "garden",
-                               "hiking_area",
-                               "historical_landmark",
-                               "marina",
-                               "national_park",
-                               "observation_deck",
-                               "opera_house",
-                               "park",
-                               "picnic_ground",
-                               "planetarium",
-                               "plaza",
-                               "tourist_attraction",
-                               "wildlife_park",
-                               "wildlife_refuge",
-                               "zoo"};
 
 String queryGemini(String weatherCondition, String localTime) {
     if (WiFi.status() != WL_CONNECTED)
@@ -49,9 +20,9 @@ String queryGemini(String weatherCondition, String localTime) {
                     "', select the most suitable subset of the following place types. "
                     "Return strictly as an array of strings, e.g., [\"beach\",\"park\"], "
                     "with no additional text or explanation: ";
-    for (int i = 0; i < sizeof(allPlaceTypes) / sizeof(allPlaceTypes[0]); i++) {
-        prompt += String(allPlaceTypes[i]);
-        if (i < (sizeof(allPlaceTypes) / sizeof(allPlaceTypes[0]) - 1))
+    for (size_t i = 0; i < Config::PLACE_TYPES_COUNT; i++) {
+        prompt += String(Config::PLACE_TYPES[i]);
+        if (i < (Config::PLACE_TYPES_COUNT - 1))
             prompt += ", ";
     }
     prompt.replace("\"", "\\\"");
