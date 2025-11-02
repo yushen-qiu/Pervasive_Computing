@@ -23,7 +23,6 @@ void App::tick() {
     // Update light sensor reading and log periodically
     LightSensor::tick();
     if (millis() - lastLightPrint_ > 1000) {
-        Serial.printf("[Light] raw=%d percent=%d%%\n", LightSensor::raw(), LightSensor::percent());
         lastLightPrint_ = millis();
     }
 
