@@ -20,6 +20,13 @@ void App::begin() {
 
     // Start light sensor calibration (5s)
     LightSensor::begin(5000);
+
+    // Start magnetometer and LED heading indicator
+    if (!Magnetometer::begin()) {
+        Serial.println("Magnetometer init failed");
+    }
+    initLED();
+    xTaskCreate(taskLED, "LED", 4096, nullptr, 1, nullptr);
 }
 
 void App::tick() {

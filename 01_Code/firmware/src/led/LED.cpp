@@ -1,9 +1,9 @@
+#include <config/Config.h>
 #include <led/LEDModule.h>
 #include <math.h>
 #include <sensors/Magnetometer.h>
-#include <config/Config.h>
 
-// CRGB leds[Config::NUM_LEDS]; // defined elsewhere
+CRGB leds[Config::NUM_LEDS];
 
 // Target bearing (absolute, from true north)
 static bool   g_hasTargetBearing = false;
@@ -11,7 +11,8 @@ static double g_targetBearingDeg = 0.0;
 
 void setTargetBearing(double bearingDeg) {
     double b = fmod(bearingDeg, 360.0);
-    if (b < 0) b += 360.0;
+    if (b < 0)
+        b += 360.0;
     g_targetBearingDeg = b;
     g_hasTargetBearing = true;
 }
@@ -42,14 +43,17 @@ void taskLED(void* pvParameters) {
         if (!isnan(heading) && g_hasTargetBearing) {
             double rel = g_targetBearingDeg - (double)heading;
             rel        = fmod(rel, 360.0);
-            if (rel < 0) rel += 360.0;
+            if (rel < 0)
+                rel += 360.0;
 
-            int center = (bearingToIndex(rel) + Config::LED_NORTH_OFFSET) % Config::NUM_LEDS;
-            leds[center]                              = CHSV((uint8_t)(rel / 2), 255, 255);
-            leds[(center + 1) % Config::NUM_LEDS]            = CHSV((uint8_t)(rel / 2), 255, 100);
-            leds[(center + Config::NUM_LEDS - 1) % Config::NUM_LEDS] = CHSV((uint8_t)(rel / 2), 255, 100);
+            int center   = (bearingToIndex(rel) + Config::LED_NORTH_OFFSET) % Config::NUM_LEDS;
+            leds[center] = CHSV((uint8_t)(rel / 2), 255, 255);
+            leds[(center + 1) % Config::NUM_LEDS] = CHSV((uint8_t)(rel / 2), 255, 100);
+            leds[(center + Config::NUM_LEDS - 1) % Config::NUM_LEDS] =
+                    CHSV((uint8_t)(rel / 2), 255, 100);
             if (center != lastCenter) {
-                Serial.printf("[LED] Target rel %.1f° -> LED #%d (offset %d)\n", rel, center, Config::LED_NORTH_OFFSET);
+                Serial.printf("[LED] Target rel %.1f° -> LED #%d (offset %d)\n", rel, center,
+                              Config::LED_NORTH_OFFSET);
                 lastCenter = center;
             }
         } else {
