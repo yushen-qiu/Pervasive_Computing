@@ -1,6 +1,4 @@
-// Magnetometer module (MMC5603) — reusable driver API
 #pragma once
-
 #include <Arduino.h>
 
 namespace Magnetometer {
