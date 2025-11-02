@@ -1,16 +1,13 @@
-// Copy this file to Config.h and fill in your values.
+// Project configuration (non-secrets) + secrets include.
 #pragma once
 
+#include <config/Secrets.h>
+
+#ifndef CONFIG_SECRETS_INCLUDED
+#error "Missing include/config/Secrets.h. Copy include/config/Secrets.example.h to include/config/Secrets.h and fill your values."
+#endif
+
 namespace Config {
-    // WiFi
-    static const char* WIFI_SSID     = "YOUR_WIFI_SSID";
-    static const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
-
-    // API keys
-    static const char* GEMINI_API_KEY  = "YOUR_GEMINI_API_KEY";
-    static const char* PLACES_API_KEY  = "YOUR_PLACES_API_KEY";
-    static const char* WEATHER_API_KEY = "YOUR_WEATHER_API_KEY";
-
     // Service URLs and identifiers
     static const char* URL_GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta";
     static const char* GEMINI_MODEL    = "gemini-2.5-flash";
@@ -21,7 +18,7 @@ namespace Config {
     // App pins
     static const int BUTTON_PIN = 14; // Default button pin
 
-    // Defaults (optional)
+    // Defaults
     static const double DEFAULT_LAT = -33.8884;
     static const double DEFAULT_LNG = 151.1868;
 
