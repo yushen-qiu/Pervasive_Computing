@@ -1,6 +1,6 @@
 #include <led/LEDModule.h>
-#include <sensors/GPS_Coords.h>
 #include <math.h>
+#include <sensors/GPS_Coords.h>
 
 // CRGB leds[NUM_LEDS];
 const int NORTH_OFFSET = 4;
@@ -10,8 +10,12 @@ static int bearingToIndex(double bearingDeg) {
     return idx;
 }
 
-static double deg2rad(double deg) { return deg * M_PI / 180.0; }
-static double rad2deg(double rad) { return rad * 180.0 / M_PI; }
+static double deg2rad(double deg) {
+    return deg * M_PI / 180.0;
+}
+static double rad2deg(double rad) {
+    return rad * 180.0 / M_PI;
+}
 
 static double bearingBetween(double lat1, double lon1, double lat2, double lon2) {
     double phi1 = deg2rad(lat1);
@@ -25,11 +29,11 @@ static double bearingBetween(double lat1, double lon1, double lat2, double lon2)
 }
 
 static double haversineMeters(double lat1, double lon1, double lat2, double lon2) {
-    static const double R = 6371000.0; // metres
-    double dLat           = deg2rad(lat2 - lat1);
-    double dLon           = deg2rad(lon2 - lon1);
-    double a = sin(dLat / 2) * sin(dLat / 2) + cos(deg2rad(lat1)) * cos(deg2rad(lat2)) *
-                                          sin(dLon / 2) * sin(dLon / 2);
+    static const double R    = 6371000.0; // metres
+    double              dLat = deg2rad(lat2 - lat1);
+    double              dLon = deg2rad(lon2 - lon1);
+    double              a    = sin(dLat / 2) * sin(dLat / 2) +
+               cos(deg2rad(lat1)) * cos(deg2rad(lat2)) * sin(dLon / 2) * sin(dLon / 2);
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
     return R * c;
 }
@@ -43,12 +47,12 @@ void initLED() {
 
 void taskLED(void* pvParameters) {
     (void)pvParameters;
-    uint8_t         hue        = 0;
-    static int      lastCenter = -1;
-    static bool     havePrev   = false;
-    static double   prevLat    = 0.0;
-    static double   prevLng    = 0.0;
-    static double   lastCourse = -1.0; // degrees
+    uint8_t       hue        = 0;
+    static int    lastCenter = -1;
+    static bool   havePrev   = false;
+    static double prevLat    = 0.0;
+    static double prevLng    = 0.0;
+    static double lastCourse = -1.0; // degrees
 
     for (;;) {
         FastLED.clear();
@@ -82,13 +86,13 @@ void taskLED(void* pvParameters) {
         }
 
         if (lastCourse >= 0.0) {
-            int center = (bearingToIndex(lastCourse) + NORTH_OFFSET) % NUM_LEDS;
-            leds[center]                             = CHSV((uint8_t)(lastCourse / 2), 255, 255);
-            leds[(center + 1) % NUM_LEDS]            = CHSV((uint8_t)(lastCourse / 2), 255, 100);
+            int center                    = (bearingToIndex(lastCourse) + NORTH_OFFSET) % NUM_LEDS;
+            leds[center]                  = CHSV((uint8_t)(lastCourse / 2), 255, 255);
+            leds[(center + 1) % NUM_LEDS] = CHSV((uint8_t)(lastCourse / 2), 255, 100);
             leds[(center + NUM_LEDS - 1) % NUM_LEDS] = CHSV((uint8_t)(lastCourse / 2), 255, 100);
             if (center != lastCenter) {
-                Serial.printf("[LED] Heading %.1f° -> LED #%d (North offset %d)\n", lastCourse, center,
-                              NORTH_OFFSET);
+                Serial.printf("[LED] Heading %.1f° -> LED #%d (North offset %d)\n", lastCourse,
+                              center, NORTH_OFFSET);
                 lastCenter = center;
             }
         } else {

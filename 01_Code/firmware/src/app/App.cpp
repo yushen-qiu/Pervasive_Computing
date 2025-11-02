@@ -4,8 +4,8 @@
 #include <net/PlacesClient.h>
 #include <net/WeatherClient.h>
 #include <net/WiFiUtil.h>
-#include <sensors/LightSensor.h>
 #include <sensors/GPS_Coords.h>
+#include <sensors/LightSensor.h>
 
 void App::begin() {
     Serial.begin(115200);
@@ -25,15 +25,12 @@ void App::begin() {
 void App::tick() {
     // Update light sensor reading and log periodically
     LightSensor::tick();
-    if (millis() - lastLightPrint_ > 1000) {
+    if (millis() - lastLightPrint_ > 1000)
         lastLightPrint_ = millis();
-    }
 
     int reading = digitalRead(Config::BUTTON_PIN);
-
-    if (reading != lastButtonState_) {
+    if (reading != lastButtonState_)
         lastDebounceTime_ = millis();
-    }
 
     if ((millis() - lastDebounceTime_) > Config::BUTTON_DEBOUNCE_MS) {
         if (reading != buttonState_) {
@@ -75,7 +72,7 @@ void App::runFlow() {
     // Use GPS_Coords() to fetch a fix on demand; fall back to defaults
     double latitude  = Config::DEFAULT_LAT;
     double longitude = Config::DEFAULT_LNG;
-    
+
     String coordsStr = GPS_Coords();
     if (coordsStr != "No Fix") {
         int comma = coordsStr.indexOf(',');
@@ -87,6 +84,7 @@ void App::runFlow() {
             double latCandidate = latStr.toDouble();
             double lngCandidate = lngStr.toDouble();
             if (!isnan(latCandidate) && !isnan(lngCandidate)) {
+                Serial.printf("Updated the latitude and longitude");
                 latitude  = latCandidate;
                 longitude = lngCandidate;
             }
