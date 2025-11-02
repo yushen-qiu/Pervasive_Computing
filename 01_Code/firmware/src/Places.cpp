@@ -1,38 +1,39 @@
-#include "Places.h"
+#include <Places.h>
+#include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
-
-const char* placesApiKey = "";
+#include <config/Config.h>
 
 void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double lng, double &destinationLatitude, double &destinationLongitude) {
 	if (WiFi.status() != WL_CONNECTED) return;
 
-	HTTPClient http;
-	String includedTypesJson = includedTypes;
+    HTTPClient http;
+    http.setTimeout(Config::HTTP_TIMEOUT_MS);
+    String includedTypesJson = includedTypes;
 
-	String requestBody = "{"
-		"\"locationRestriction\": {"
-			"\"circle\": {"
-				"\"center\": {\"latitude\": " + String(lat, 6) + ", \"longitude\": " + String(lng, 6) + "},"
-				"\"radius\": " + String(pressCount * 250) +
-			"}"
-		"},"
-		"\"includedTypes\": " + includedTypesJson + ","
-		"\"maxResultCount\": 1"
-	"}";
+    String requestBody;
+    requestBody.reserve(256);
+    requestBody  = "{";
+    requestBody += "\"locationRestriction\":{\"circle\":{";
+    requestBody += "\"center\":{\"latitude\":" + String(lat, 6) + ",\"longitude\":" + String(lng, 6) + "},";
+    requestBody += "\"radius\":" + String(pressCount * Config::PLACES_RADIUS_PER_PRESS_M);
+    requestBody += "}},";
+    requestBody += "\"includedTypes\":" + includedTypesJson + ",";
+    requestBody += "\"maxResultCount\":1";
+    requestBody += "}";
 
 	Serial.println(requestBody);
 
 	http.begin("https://places.googleapis.com/v1/places:searchNearby");
 	http.addHeader("Content-Type", "application/json");
-	http.addHeader("X-Goog-Api-Key", placesApiKey);
+	http.addHeader("X-Goog-Api-Key", Config::PLACES_API_KEY);
 	http.addHeader("X-Goog-FieldMask", "places.displayName,places.formattedAddress,places.types,places.location");
 
 	int httpCode = http.POST(requestBody);
 
 	if (httpCode > 0) {
 		String payload = http.getString();
-		JsonDocument doc;
+		DynamicJsonDocument doc(4096);
 		DeserializationError err = deserializeJson(doc, payload);
 
 		if (!err && !doc["places"][0]["location"].isNull()) {
@@ -48,4 +49,3 @@ void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double l
 
 	http.end();
 }
-

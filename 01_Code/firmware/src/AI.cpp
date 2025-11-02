@@ -1,8 +1,8 @@
-#include "AI.h"
+#include <AI.h>
+#include <WiFi.h>
 #include <HTTPClient.h>
 #include <ArduinoJson.h>
-
-const char* geminiApiKey = "";
+#include <config/Config.h>
 
 const char* allPlaceTypes[] = {
 	"beach","art_gallery","cultural_landmark","historical_place","monument",
@@ -16,8 +16,8 @@ String queryGemini(String weatherCondition, String localTime) {
 	if (WiFi.status() != WL_CONNECTED) return "";
 
 	HTTPClient http;
-	http.setTimeout(30000);
-	String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + String(geminiApiKey);
+	http.setTimeout(Config::HTTP_TIMEOUT_MS);
+	String url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" + String(Config::GEMINI_API_KEY);
 	http.begin(url);
 	http.addHeader("Content-Type", "application/json");
 
@@ -39,7 +39,7 @@ String queryGemini(String weatherCondition, String localTime) {
 		String payload = http.getString();
 		Serial.println("Raw Gemini response: " + payload);
 
-		JsonDocument doc;
+		DynamicJsonDocument doc(4096);
 		DeserializationError err = deserializeJson(doc, payload);
 
 		if (!err && !doc["candidates"][0]["content"]["parts"][0]["text"].isNull()) {

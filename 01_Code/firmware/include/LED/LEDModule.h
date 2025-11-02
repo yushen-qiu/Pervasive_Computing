@@ -1,8 +1,6 @@
 #ifndef LED_MODULE_H
 #define LED_MODULE_H
 
-#include "../GPS/GPSModule.h"
-
 #include <Arduino.h>
 #include <FastLED.h>
 

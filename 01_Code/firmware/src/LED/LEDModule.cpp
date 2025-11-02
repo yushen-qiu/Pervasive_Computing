@@ -1,4 +1,5 @@
-#include "LEDModule.h"
+#include <LED/LEDModule.h>
+#include <GPS/GPSModule.h>
 
 // CRGB leds[NUM_LEDS];
 const int NORTH_OFFSET = 4;

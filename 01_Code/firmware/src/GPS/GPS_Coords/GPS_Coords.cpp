@@ -1,11 +1,12 @@
-#include "GPS_Coords.h"
+#include <GPS/GPS_Coords/GPS_Coords.h>
 
 #include <HardwareSerial.h>
 #include <TinyGPSPlus.h>
+#include <config/Config.h>
 
-static const int      RXPin   = 16; // GPS TX -> ESP32 RX2
-static const int      TXPin   = 17; // GPS RX -> ESP32 TX2
-static const uint32_t GPSBaud = 9600;
+static const int      RXPin   = Config::GPS_RX_PIN; // GPS TX -> ESP32 RX2
+static const int      TXPin   = Config::GPS_TX_PIN; // GPS RX -> ESP32 TX2
+static const uint32_t GPSBaud = Config::GPS_BAUD;
 
 HardwareSerial GPS_Serial(2);
 TinyGPSPlus    gps;
@@ -18,7 +19,7 @@ String GPS_Coords() {
     }
 
     unsigned long       start   = millis();
-    const unsigned long timeout = 2000;
+    const unsigned long timeout = Config::GPS_FIX_TIMEOUT_MS;
 
     while (millis() - start < timeout) {
         while (GPS_Serial.available() > 0) {
