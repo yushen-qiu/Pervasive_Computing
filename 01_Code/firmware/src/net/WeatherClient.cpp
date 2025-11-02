@@ -16,8 +16,8 @@ void fetchWeather(String& condition, String& localTime, double lat, double lng) 
     int httpCode = http.GET();
 
     if (httpCode > 0) {
-        String              payload = http.getString();
-        DynamicJsonDocument doc(4096);
+        String payload = http.getString();
+        JsonDocument doc;
         deserializeJson(doc, payload);
 
         condition = String(doc["current"]["condition"]["text"].as<const char*>());

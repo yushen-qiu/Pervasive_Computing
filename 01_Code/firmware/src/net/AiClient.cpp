@@ -35,14 +35,17 @@ String queryGemini(String weatherCondition, String localTime) {
         String payload = http.getString();
         Serial.println("Raw Gemini response: " + payload);
 
-        DynamicJsonDocument  doc(4096);
+        JsonDocument doc;
         DeserializationError err = deserializeJson(doc, payload);
 
         if (!err && !doc["candidates"][0]["content"]["parts"][0]["text"].isNull()) {
             responseStr =
                     String(doc["candidates"][0]["content"]["parts"][0]["text"].as<const char*>());
+            responseStr.replace("```json", "");
+            responseStr.replace("```", "");
             responseStr.replace("\n", "");
             responseStr.trim();
+
             Serial.println("Gemini selected place types: " + responseStr);
         } else {
             Serial.println("Error parsing Gemini response");

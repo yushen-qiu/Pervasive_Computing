@@ -1,7 +1,4 @@
-#include "GPS_Coords.h"
-
-#include <HardwareSerial.h>
-#include <TinyGPSPlus.h>
+#include "sensors/GPS_Coords.h"
 #include <config/Config.h>
 
 static const int      RXPin   = Config::GPS_RX_PIN; // GPS TX -> ESP32 RX2
