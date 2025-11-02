@@ -37,7 +37,6 @@ void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double l
     int httpCode = http.POST(requestBody);
 
     if (httpCode > 0) {
-<<<<<<< HEAD
         String payload = http.getString();
         JsonDocument doc;
         DeserializationError err = deserializeJson(doc, payload);
@@ -46,17 +45,6 @@ void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double l
             int randomIndex = random(0, 3);
 			destinationLatitude = doc["places"][randomIndex]["location"]["latitude"];
 			destinationLongitude = doc["places"][randomIndex]["location"]["longitude"];
-=======
-        String               payload = http.getString();
-        DynamicJsonDocument  doc(4096);
-        DeserializationError err = deserializeJson(doc, payload);
-
-        if (!err && !doc["places"][0]["location"].isNull()) {
-            int randomIndex      = random(0, 3);
-            destinationLatitude  = doc["places"][randomIndex]["location"]["latitude"];
-            destinationLongitude = doc["places"][randomIndex]["location"]["longitude"];
-            Serial.printf("Nearby place: %.6f, %.6f\n", destinationLatitude, destinationLongitude);
->>>>>>> 8e77836233b1b5e992269ae078a390e54dc9561a
         } else {
             Serial.println("Error parsing Places API response");
         }
