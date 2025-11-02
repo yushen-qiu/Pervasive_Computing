@@ -7,6 +7,7 @@
 #include <sensors/GPS_Coords.h>
 #include <sensors/LightSensor.h>
 #include <sensors/Magnetometer.h>
+#include <led/LEDModule.h>
 
 void App::begin() {
     Serial.begin(115200);
@@ -119,5 +120,18 @@ void App::runFlow() {
 
     if (destLat_ != 0 || destLng_ != 0) {
         Serial.printf("Destination: %.6f, %.6f\n", destLat_, destLng_);
+        // Compute absolute bearing from current position to destination and pass to LED
+        constexpr double DEG2RAD = 0.017453292519943295; // pi/180
+        constexpr double RAD2DEG = 57.29577951308232;    // 180/pi
+        auto deg2rad             = [](double d) { return d * DEG2RAD; };
+        auto rad2deg             = [](double r) { return r * RAD2DEG; };
+        double phi1  = deg2rad(latitude);
+        double phi2  = deg2rad(destLat_);
+        double dLon  = deg2rad(destLng_ - longitude);
+        double y     = sin(dLon) * cos(phi2);
+        double x     = cos(phi1) * sin(phi2) - sin(phi1) * cos(phi2) * cos(dLon);
+        double brng  = atan2(y, x);
+        double bearingDeg = fmod(rad2deg(brng) + 360.0, 360.0);
+        setTargetBearing(bearingDeg);
     }
 }

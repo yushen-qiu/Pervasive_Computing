@@ -16,4 +16,10 @@ extern const int NORTH_OFFSET;
 void initLED();
 void taskLED(void* pvParameters);
 
+// Set the target GPS destination for the LED heading indicator
+void setTarget(double lat, double lng);
+
+// Alternatively, set the absolute bearing to the target (degrees from true north)
+void setTargetBearing(double bearingDeg);
+
 #endif
