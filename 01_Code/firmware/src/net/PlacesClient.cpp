@@ -37,14 +37,14 @@ void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double l
     int httpCode = http.POST(requestBody);
 
     if (httpCode > 0) {
-        String payload = http.getString();
-        JsonDocument doc;
+        String               payload = http.getString();
+        JsonDocument         doc;
         DeserializationError err = deserializeJson(doc, payload);
 
         if (!err && !doc["places"][0]["location"].isNull()) {
-            int randomIndex = random(0, 3);
-			destinationLatitude = doc["places"][randomIndex]["location"]["latitude"];
-			destinationLongitude = doc["places"][randomIndex]["location"]["longitude"];
+            int randomIndex      = random(0, 3);
+            destinationLatitude  = doc["places"][randomIndex]["location"]["latitude"];
+            destinationLongitude = doc["places"][randomIndex]["location"]["longitude"];
         } else {
             Serial.println("Error parsing Places API response");
         }

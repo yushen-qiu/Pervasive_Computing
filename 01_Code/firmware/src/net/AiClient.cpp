@@ -35,7 +35,7 @@ String queryGemini(String weatherCondition, String localTime) {
         String payload = http.getString();
         Serial.println("Raw Gemini response: " + payload);
 
-        JsonDocument doc;
+        JsonDocument         doc;
         DeserializationError err = deserializeJson(doc, payload);
 
         if (!err && !doc["candidates"][0]["content"]["parts"][0]["text"].isNull()) {

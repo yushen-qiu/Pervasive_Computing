@@ -1,6 +1,6 @@
 // Magnetometer module implementation for MMC5603
-#include <Arduino.h>
 #include <Adafruit_MMC56x3.h>
+#include <Arduino.h>
 #include <Wire.h>
 #include <sensors/Magnetometer.h>
 
@@ -23,8 +23,8 @@ namespace Magnetometer {
     static float heading_deg = NAN;
 
     // One-time auto calibration window
-    static bool          autoCalibrating   = false;
-    static unsigned long autoCalibStartMs  = 0;
+    static bool                autoCalibrating     = false;
+    static unsigned long       autoCalibStartMs    = 0;
     static const unsigned long autoCalibDurationMs = 10000; // 10s
 
     static void computeCalibration_() {
@@ -41,13 +41,18 @@ namespace Magnetometer {
     }
 
     static const char* directionFromHeading_(float h) {
-        if (isnan(h)) return "Unknown";
+        if (isnan(h))
+            return "Unknown";
         int sector = (int)((h + 45.0f) / 90.0f) & 3; // 0..3
         switch (sector) {
-            case 0: return "North";
-            case 1: return "East";
-            case 2: return "South";
-            case 3: return "West";
+            case 0:
+                return "North";
+            case 1:
+                return "East";
+            case 2:
+                return "South";
+            case 3:
+                return "West";
         }
         return "Unknown";
     }
@@ -119,12 +124,18 @@ namespace Magnetometer {
         const float mz = magEvent.magnetic.z;
 
         if (calibrating) {
-            if (mx < magMin[0]) magMin[0] = mx;
-            if (my < magMin[1]) magMin[1] = my;
-            if (mz < magMin[2]) magMin[2] = mz;
-            if (mx > magMax[0]) magMax[0] = mx;
-            if (my > magMax[1]) magMax[1] = my;
-            if (mz > magMax[2]) magMax[2] = mz;
+            if (mx < magMin[0])
+                magMin[0] = mx;
+            if (my < magMin[1])
+                magMin[1] = my;
+            if (mz < magMin[2])
+                magMin[2] = mz;
+            if (mx > magMax[0])
+                magMax[0] = mx;
+            if (my > magMax[1])
+                magMax[1] = my;
+            if (mz > magMax[2])
+                magMax[2] = mz;
             return;
         }
 
@@ -134,25 +145,36 @@ namespace Magnetometer {
         (void)mz; // heading uses X/Y on flat plane
 
         float h = atan2f(mx_c, my_c) * 180.0f / PI;
-        if (h < 0) h += 360.0f;
+        if (h < 0)
+            h += 360.0f;
 
         // Declination + manual north offset
         h += declinationDeg;
-        while (h >= 360.0f) h -= 360.0f;
-        while (h < 0.0f)    h += 360.0f;
+        while (h >= 360.0f)
+            h -= 360.0f;
+        while (h < 0.0f)
+            h += 360.0f;
 
         h += northOffsetDeg;
-        while (h >= 360.0f) h -= 360.0f;
-        while (h < 0.0f)    h += 360.0f;
+        while (h >= 360.0f)
+            h -= 360.0f;
+        while (h < 0.0f)
+            h += 360.0f;
 
         heading_deg = h;
     }
 
-    float headingDeg() { return heading_deg; }
+    float headingDeg() {
+        return heading_deg;
+    }
 
-    void setDeclination(float deg) { declinationDeg = deg; }
+    void setDeclination(float deg) {
+        declinationDeg = deg;
+    }
 
-    void setNorthOffset(float deg) { northOffsetDeg = deg; }
+    void setNorthOffset(float deg) {
+        northOffsetDeg = deg;
+    }
 
     void startCalibration() {
         calibrating = true;
@@ -165,6 +187,8 @@ namespace Magnetometer {
         computeCalibration_();
     }
 
-    bool isCalibrating() { return calibrating; }
+    bool isCalibrating() {
+        return calibrating;
+    }
 
 } // namespace Magnetometer
