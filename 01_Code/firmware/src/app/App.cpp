@@ -31,6 +31,7 @@ void App::begin() {
     }
     initLED();
     xTaskCreate(taskLED, "LED", 4096, nullptr, 1, nullptr);
+    setLedMode(LedMode::Input);
 }
 
 void App::tick() {
@@ -83,6 +84,7 @@ void App::tick() {
         countingActive_ = false;
         windowFinished_ = true;
         Serial.println("Time's up! Final press count locked: " + String(pressCount_));
+        setLedMode(LedMode::Processing);
 
         runFlow();
 
@@ -91,6 +93,7 @@ void App::tick() {
         windowFinished_ = false;
         pressCount_     = 0;
         Serial.println("Ready for next input.");
+        setLedMode(LedMode::Input);
     }
 
     lastButtonState_ = reading;
@@ -132,5 +135,6 @@ void App::runFlow() {
         double           bearingDeg = fmod(rad2deg(brng) + 360.0, 360.0);
         setTargetBearing(bearingDeg);
         setTargetCoords(destLat_, destLng_);
+        setLedMode(LedMode::Navigating);
     }
 }

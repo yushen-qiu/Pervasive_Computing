@@ -11,6 +11,9 @@
 
 extern CRGB leds[Config::NUM_LEDS];
 
+// High-level LED modes for app flow
+enum class LedMode { Input, Processing, Navigating };
+
 void initLED();
 void taskLED(void* pvParameters);
 
@@ -19,5 +22,8 @@ void setTargetBearing(double bearingDeg);
 
 // Provide target coordinates so LED can compute distance to target
 void setTargetCoords(double latDeg, double lngDeg);
+
+// Set current LED mode for flow indication
+void setLedMode(LedMode mode);
 
 #endif

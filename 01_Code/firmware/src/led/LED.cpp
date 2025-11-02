@@ -12,6 +12,9 @@ static double g_targetBearingDeg = 0.0;
 static double g_targetLatDeg     = NAN;
 static double g_targetLngDeg     = NAN;
 
+// Current LED flow mode (default: Input)
+static LedMode g_mode = LedMode::Input;
+
 void setTargetBearing(double bearingDeg) {
     double b = fmod(bearingDeg, 360.0);
     if (b < 0)
@@ -44,11 +47,27 @@ static double haversineMeters(double lat1, double lon1, double lat2, double lon2
     return R * c;
 }
 
+static double bearingBetweenDeg(double lat1, double lon1, double lat2, double lon2) {
+    const double phi1 = deg2rad(lat1);
+    const double phi2 = deg2rad(lat2);
+    const double dLon = deg2rad(lon2 - lon1);
+    const double y    = sin(dLon) * cos(phi2);
+    const double x    = cos(phi1) * sin(phi2) - sin(phi1) * cos(phi2) * cos(dLon);
+    const double brng = atan2(y, x);
+    double       deg  = brng * 57.29577951308232; // RAD2DEG
+    deg               = fmod(deg + 360.0, 360.0);
+    return deg;
+}
+
 void initLED() {
     FastLED.addLeds<LED_TYPE, Config::LED_PIN, COLOR_ORDER>(leds, Config::NUM_LEDS);
     FastLED.setBrightness(Config::LED_BRIGHTNESS);
     FastLED.clear();
     FastLED.show();
+}
+
+void setLedMode(LedMode mode) {
+    g_mode = mode;
 }
 
 void taskLED(void* pvParameters) {
@@ -57,25 +76,31 @@ void taskLED(void* pvParameters) {
     static int           lastCenter  = -1;
     static bool          blinkOn     = false;
     static unsigned long lastBlinkMs = 0;
+    static unsigned long lastPulseMs = 0;
+    static uint8_t       pulseVal    = 0; // 0..255
 
     for (;;) {
         FastLED.clear();
 
-        // Distance check if we have a target and a GPS fix
-        bool within10m = false;
+        // Distance and dynamic bearing using live GPS fix
+        bool   withinArrival  = false;
+        double absBearingDeg  = NAN;
+        bool   haveAbsBearing = false;
         if (!isnan(g_targetLatDeg) && !isnan(g_targetLngDeg)) {
             GpsFix fix;
             if (getLatestFix(fix) && fix.valid) {
-                double dist = haversineMeters(fix.lat, fix.lng, g_targetLatDeg, g_targetLngDeg);
-                within10m   = (dist < 10.0);
+                const double dist = haversineMeters(fix.lat, fix.lng, g_targetLatDeg, g_targetLngDeg);
+                withinArrival     = (dist < Config::ARRIVAL_DISTANCE_M);
+                absBearingDeg     = bearingBetweenDeg(fix.lat, fix.lng, g_targetLatDeg, g_targetLngDeg);
+                haveAbsBearing    = true;
             }
         }
 
         float heading = Magnetometer::headingDeg();
-        if (within10m) {
-            // Blink green when very close to the target
+        if (withinArrival) {
+            // Blink green when within the configured arrival distance
             unsigned long now = millis();
-            if (now - lastBlinkMs > 300) {
+            if (now - lastBlinkMs > Config::LED_ARRIVAL_BLINK_MS) {
                 blinkOn     = !blinkOn;
                 lastBlinkMs = now;
             }
@@ -84,8 +109,43 @@ void taskLED(void* pvParameters) {
             } else {
                 FastLED.clear();
             }
-        } else if (!isnan(heading) && g_hasTargetBearing) {
-            double rel = g_targetBearingDeg - (double)heading;
+        } else if (g_mode == LedMode::Input) {
+            // Green pulse while capturing input
+            unsigned long now = millis();
+            if (now - lastPulseMs > Config::LED_PULSE_UPDATE_MS) {
+                lastPulseMs = now;
+                static int8_t dir = Config::LED_PULSE_STEP;
+                int          v   = (int)pulseVal + dir;
+                if (v >= Config::LED_PULSE_MAX) {
+                    v   = Config::LED_PULSE_MAX;
+                    dir = -Config::LED_PULSE_STEP;
+                } else if (v <= Config::LED_PULSE_MIN) {
+                    v   = Config::LED_PULSE_MIN;
+                    dir = Config::LED_PULSE_STEP;
+                }
+                pulseVal = (uint8_t)v;
+            }
+            fill_solid(leds, Config::NUM_LEDS, CRGB(0, pulseVal, 0));
+        } else if (g_mode == LedMode::Processing) {
+            // Yellow glow/pulse while processing
+            unsigned long now = millis();
+            if (now - lastPulseMs > Config::LED_PULSE_UPDATE_MS) {
+                lastPulseMs = now;
+                static int8_t dir = Config::LED_PULSE_STEP;
+                int          v   = (int)pulseVal + dir;
+                if (v >= Config::LED_PULSE_MAX) {
+                    v   = Config::LED_PULSE_MAX;
+                    dir = -Config::LED_PULSE_STEP;
+                } else if (v <= Config::LED_PULSE_MIN) {
+                    v   = Config::LED_PULSE_MIN;
+                    dir = Config::LED_PULSE_STEP;
+                }
+                pulseVal = (uint8_t)v;
+            }
+            fill_solid(leds, Config::NUM_LEDS, CRGB(pulseVal, pulseVal, 0));
+        } else if (!isnan(heading) && (haveAbsBearing || g_hasTargetBearing)) {
+            const double bearingBase = haveAbsBearing ? absBearingDeg : g_targetBearingDeg;
+            double       rel         = bearingBase - (double)heading;
             rel        = fmod(rel, 360.0);
             if (rel < 0)
                 rel += 360.0;
@@ -105,6 +165,6 @@ void taskLED(void* pvParameters) {
         }
 
         FastLED.show();
-        vTaskDelay(200 / portTICK_PERIOD_MS);
+        vTaskDelay(Config::LED_TASK_PERIOD_MS / portTICK_PERIOD_MS);
     }
 }

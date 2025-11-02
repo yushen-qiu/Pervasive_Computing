@@ -25,6 +25,17 @@ namespace Config {
     static constexpr int LED_BRIGHTNESS   = 150;
     static constexpr int LED_NORTH_OFFSET = 4; // index offset so LED at "front" is north
 
+    // Navigation thresholds
+    static constexpr double ARRIVAL_DISTANCE_M = 10.0; // blink green when within this distance
+
+    // LED timing (ms) and pulse parameters
+    static const unsigned long LED_TASK_PERIOD_MS   = 200; // LED task loop delay
+    static const unsigned long LED_ARRIVAL_BLINK_MS = 300; // blink period when arrived
+    static const unsigned long LED_PULSE_UPDATE_MS  = 20;  // pulse update cadence
+    static const int           LED_PULSE_STEP       = 4;   // pulse step per tick
+    static const int           LED_PULSE_MIN        = 16;  // min brightness for pulse
+    static const int           LED_PULSE_MAX        = 255; // max brightness for pulse
+
     // Defaults
     static const double DEFAULT_LAT = -33.8884;
     static const double DEFAULT_LNG = 151.1868;
