@@ -83,10 +83,9 @@
 
 // 	lastButtonState = reading;
 // }
-<<<<<<< HEAD
 
-#include "Magnetometer/Magnetometer.h"
 #include "GPS/GPS_Coords/GPS_Coords.h"
+#include "Magnetometer/Magnetometer.h"
 
 void setup() {
     Serial.begin(115200);
@@ -96,11 +95,10 @@ void setup() {
 void loop() {
     String coords = GPS_Coords();
     Serial.println(coords);
-    
+
     HeadingData headingData = getMagnetometerReading();
-    Serial.println("Heading: "+headingData.heading+"°  Direction: "+headingData.direction);
-    
+    Serial.println("Heading: " + String(headingData.heading) +
+                   "°  Direction: " + String(headingData.direction));
+
     delay(2000);
 }
-=======
->>>>>>> c99e27b (add gps direction)
