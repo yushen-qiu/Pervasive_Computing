@@ -3,21 +3,16 @@
 
 #include <Arduino.h>
 #include <FastLED.h>
+#include <config/Config.h>
 
-#define LED_PIN 4
-#define NUM_LEDS 16
+// Keep LED_TYPE and COLOR_ORDER here for FastLED template parameters
 #define LED_TYPE WS2812
 #define COLOR_ORDER GRB
-#define BRIGHTNESS 150
 
-extern CRGB      leds[NUM_LEDS];
-extern const int NORTH_OFFSET;
+extern CRGB leds[Config::NUM_LEDS];
 
 void initLED();
 void taskLED(void* pvParameters);
-
-// Set the target GPS destination for the LED heading indicator
-void setTarget(double lat, double lng);
 
 // Alternatively, set the absolute bearing to the target (degrees from true north)
 void setTargetBearing(double bearingDeg);

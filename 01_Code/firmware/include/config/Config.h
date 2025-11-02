@@ -19,6 +19,12 @@ namespace Config {
     static const int BUTTON_PIN       = 14; // Default button pin
     static const int LIGHT_SENSOR_PIN = 36; // ADC input (GPIO36)
 
+    // LED configuration
+    static constexpr int LED_PIN           = 4;
+    static constexpr int NUM_LEDS          = 16;
+    static constexpr int LED_BRIGHTNESS    = 150;
+    static constexpr int LED_NORTH_OFFSET  = 4; // index offset so LED at "front" is north
+
     // Defaults
     static const double DEFAULT_LAT = -33.8884;
     static const double DEFAULT_LNG = 151.1868;
