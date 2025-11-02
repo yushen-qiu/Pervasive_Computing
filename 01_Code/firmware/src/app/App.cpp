@@ -6,6 +6,7 @@
 #include <net/WiFiUtil.h>
 #include <sensors/GPS_Coords.h>
 #include <sensors/LightSensor.h>
+#include <sensors/Magnetometer.h>
 
 void App::begin() {
     Serial.begin(115200);
@@ -19,7 +20,16 @@ void App::begin() {
     // Start light sensor calibration (5s)
     LightSensor::begin(5000);
 
-    // Using on-demand GPS fix via GPS_Coords() in runFlow(); no background task here
+    // Initialise magnetometer (MMC5603)
+    if (!Magnetometer::begin()) {
+        Serial.println("Magnetometer init failed");
+    } else {
+        // One-time calibration window at startup
+        Serial.println("[Mag] Calibrating... rotate sensor slowly for 10s");
+        magCalibrating_  = true;
+        magCalibStartMs_ = millis();
+        Magnetometer::startCalibration();
+    }
 }
 
 void App::tick() {
@@ -27,6 +37,18 @@ void App::tick() {
     LightSensor::tick();
     if (millis() - lastLightPrint_ > 1000)
         lastLightPrint_ = millis();
+
+    // Complete magnetometer calibration before handling button flow
+    if (magCalibrating_) {
+        if (millis() - magCalibStartMs_ >= magCalibDurationMs_) {
+            Magnetometer::stopCalibration();
+            magCalibrating_ = false;
+            Serial.println("[Mag] Calibration complete. Using calibrated heading.");
+        } else {
+            // Still calibrating; skip button logic this loop
+            return;
+        }
+    }
 
     int reading = digitalRead(Config::BUTTON_PIN);
     if (reading != lastButtonState_)

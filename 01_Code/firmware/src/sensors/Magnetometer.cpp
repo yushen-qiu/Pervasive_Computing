@@ -20,6 +20,25 @@ namespace Magnetometer {
     // Last computed heading
     static float heading_deg = NAN;
 
+    // Background task to poll sensor and print heading
+    static void taskMag_(void* pv) {
+        (void)pv;
+        uint32_t lastPrint = 0;
+        for (;;) {
+            update();
+            if (!isCalibrating()) {
+                if (millis() - lastPrint > 1000) {
+                    float h = headingDeg();
+                    if (!isnan(h)) {
+                        Serial.printf("[Mag] heading=%.1f°\n", h);
+                    }
+                    lastPrint = millis();
+                }
+            }
+            vTaskDelay(100 / portTICK_PERIOD_MS);
+        }
+    }
+
     static void computeCalibration_() {
         for (int i = 0; i < 3; i++) {
             offset[i] = (magMax[i] + magMin[i]) / 2.0f;
@@ -37,6 +56,8 @@ namespace Magnetometer {
         if (!mag.begin(i2c_addr, &Wire)) {
             return false;
         }
+        // Start background task to update and print heading
+        xTaskCreate(taskMag_, "Mag", 4096, nullptr, 1, nullptr);
         return true;
     }
 
