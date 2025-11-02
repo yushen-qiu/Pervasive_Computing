@@ -27,6 +27,23 @@ void App::tick() {
     if (millis() - lastLightPrint_ > 1000)
         lastLightPrint_ = millis();
 
+    // Manual magnetometer calibration via Serial: press 'c' to start 10s window
+    if (Serial.available() > 0) {
+        char ch = (char)Serial.read();
+        if ((ch == 'c' || ch == 'C') && !magCalibrating_) {
+            Magnetometer::startCalibration();
+            magCalibrating_  = true;
+            magCalibStartMs_ = millis();
+            Serial.println("[Mag] Calibration started (10s). Rotate sensor slowly.");
+        }
+    }
+
+    if (magCalibrating_ && (millis() - magCalibStartMs_ >= magCalibDurationMs_)) {
+        Magnetometer::stopCalibration();
+        magCalibrating_ = false;
+        Serial.println("[Mag] Calibration complete.");
+    }
+
     int reading = digitalRead(Config::BUTTON_PIN);
     if (reading != lastButtonState_)
         lastDebounceTime_ = millis();
