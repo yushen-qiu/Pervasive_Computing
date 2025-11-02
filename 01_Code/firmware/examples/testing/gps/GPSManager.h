@@ -1,4 +1,4 @@
-// moved to examples/testing
+// moved to examples/testing/gps
 #pragma once
 #include "GPSAutoBaud.h"
 #include "GpsTracker.h"

@@ -1,8 +1,8 @@
 #include <app/App.h>
-#include <net/AI.h>
-#include <net/Places.h>
-#include <net/Weather.h>
 #include <config/Config.h>
+#include <net/AiClient.h>
+#include <net/PlacesClient.h>
+#include <net/WeatherClient.h>
 #include <net/WiFiUtil.h>
 
 void App::begin() {

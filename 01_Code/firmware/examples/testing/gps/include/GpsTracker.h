@@ -1,4 +1,4 @@
-// moved to examples/testing
+// moved to examples/testing/gps
 #pragma once
 #include <Arduino.h>
 #include <TinyGPSPlus.h>

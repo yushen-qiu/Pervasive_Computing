@@ -2,40 +2,41 @@
 #pragma once
 
 namespace Config {
-// WiFi
-static const char* WIFI_SSID     = "YOUR_WIFI_SSID";
-static const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
+    // WiFi
+    static const char* WIFI_SSID     = "YOUR_WIFI_SSID";
+    static const char* WIFI_PASSWORD = "YOUR_WIFI_PASSWORD";
 
-// API keys
-static const char* GEMINI_API_KEY = "YOUR_GEMINI_API_KEY";
-static const char* PLACES_API_KEY = "YOUR_PLACES_API_KEY";
-static const char* WEATHER_API_KEY = "YOUR_WEATHER_API_KEY";
+    // API keys
+    static const char* GEMINI_API_KEY  = "YOUR_GEMINI_API_KEY";
+    static const char* PLACES_API_KEY  = "YOUR_PLACES_API_KEY";
+    static const char* WEATHER_API_KEY = "YOUR_WEATHER_API_KEY";
 
-// Service URLs and identifiers
-static const char* URL_GEMINI_BASE           = "https://generativelanguage.googleapis.com/v1beta";
-static const char* GEMINI_MODEL              = "gemini-2.5-flash";
-static const char* URL_PLACES_SEARCH_NEARBY  = "https://places.googleapis.com/v1/places:searchNearby";
-static const char* URL_WEATHER_CURRENT       = "http://api.weatherapi.com/v1/current.json";
+    // Service URLs and identifiers
+    static const char* URL_GEMINI_BASE = "https://generativelanguage.googleapis.com/v1beta";
+    static const char* GEMINI_MODEL    = "gemini-2.5-flash";
+    static const char* URL_PLACES_SEARCH_NEARBY =
+            "https://places.googleapis.com/v1/places:searchNearby";
+    static const char* URL_WEATHER_CURRENT = "http://api.weatherapi.com/v1/current.json";
 
-// App pins
-static const int BUTTON_PIN = 14;  // Default button pin
+    // App pins
+    static const int BUTTON_PIN = 14; // Default button pin
 
-// Defaults (optional)
-static const double DEFAULT_LAT = -33.8884;
-static const double DEFAULT_LNG = 151.1868;
+    // Defaults (optional)
+    static const double DEFAULT_LAT = -33.8884;
+    static const double DEFAULT_LNG = 151.1868;
 
-// Timeouts and delays (ms)
-static const unsigned long HTTP_TIMEOUT_MS         = 30000;
-static const unsigned long WIFI_CONNECT_TIMEOUT_MS = 30000;
-static const unsigned long BUTTON_DEBOUNCE_MS      = 50;
-static const unsigned long COUNT_WINDOW_MS         = 5000;
+    // Timeouts and delays (ms)
+    static const unsigned long HTTP_TIMEOUT_MS         = 30000;
+    static const unsigned long WIFI_CONNECT_TIMEOUT_MS = 30000;
+    static const unsigned long BUTTON_DEBOUNCE_MS      = 50;
+    static const unsigned long COUNT_WINDOW_MS         = 5000;
 
-// Places radius scaling (metres per button press)
-static const int PLACES_RADIUS_PER_PRESS_M = 250;
+    // Places radius scaling (metres per button press)
+    static const int PLACES_RADIUS_PER_PRESS_M = 250;
 
-// GPS (for simple GPS_Coords demo)
-static const int      GPS_RX_PIN          = 16;
-static const int      GPS_TX_PIN          = 17;
-static const uint32_t GPS_BAUD            = 9600;
-static const unsigned long GPS_FIX_TIMEOUT_MS = 2000;
-}
+    // GPS (for simple GPS_Coords demo)
+    static const int           GPS_RX_PIN         = 16;
+    static const int           GPS_TX_PIN         = 17;
+    static const uint32_t      GPS_BAUD           = 9600;
+    static const unsigned long GPS_FIX_TIMEOUT_MS = 2000;
+} // namespace Config

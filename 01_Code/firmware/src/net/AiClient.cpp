@@ -1,8 +1,8 @@
-#include <net/AI.h>
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 #include <WiFi.h>
 #include <config/Config.h>
+#include <net/AiClient.h>
 
 const char* allPlaceTypes[] = {"beach",
                                "art_gallery",
