@@ -18,9 +18,11 @@ void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double l
 			"}"
 		"},"
 		"\"includedTypes\": " + includedTypesJson + ","
-		"\"maxResultCount\": 1"
+		"\"rankPreference\": \"DISTANCE\","
+		"\"maxResultCount\": 3"
 	"}";
 
+	Serial.println("Request Body:");
 	Serial.println(requestBody);
 
 	http.begin("https://places.googleapis.com/v1/places:searchNearby");
@@ -32,20 +34,26 @@ void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double l
 
 	if (httpCode > 0) {
 		String payload = http.getString();
+		Serial.println("API Response:");
+		Serial.println(payload);
+
 		JsonDocument doc;
 		DeserializationError err = deserializeJson(doc, payload);
 
-		if (!err && !doc["places"][0]["location"].isNull()) {
-			destinationLatitude = doc["places"][0]["location"]["latitude"];
-			destinationLongitude = doc["places"][0]["location"]["longitude"];
-			Serial.printf("Nearby place: %.6f, %.6f\n", destinationLatitude, destinationLongitude);
+		if (!err && doc["places"].size() > 0) {
+			// Randomly pick one of the results
+			int randomIndex = random(0, 3);
+
+			destinationLatitude = doc["places"][randomIndex]["location"]["latitude"];
+			destinationLongitude = doc["places"][randomIndex]["location"]["longitude"];
+
+			Serial.printf("Selected place %d: %.6f, %.6f\n", randomIndex, destinationLatitude, destinationLongitude);
 		} else {
-			Serial.println("Error parsing Places API response");
+			Serial.println("Error parsing Places API response or no places found.");
 		}
 	} else {
-		Serial.println("Error fetching Places API");
+		Serial.printf("HTTP request failed. Code: %d\n", httpCode);
 	}
 
 	http.end();
 }
-
