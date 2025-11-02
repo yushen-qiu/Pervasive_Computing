@@ -14,6 +14,9 @@ void startCalibration();
 
 HeadingData getMagnetometerReading();
 
+extern float northOffset;
+extern bool calibrating;
+
 #endif
 
 // String getDirection(float heading);

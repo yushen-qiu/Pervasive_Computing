@@ -36,6 +36,7 @@ String getDirection(float heading) {
     }
 }
 
+// Checks connection with Magnetometer
 void setupMagnetometer() {
     Serial.begin(115200);
     delay(1000);
