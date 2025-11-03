@@ -1,3 +1,5 @@
+#include <Integration/Orientation.h>
+#include <Integration/OrientationLED.h>
 #include <config/Config.h>
 #include <led/LEDModule.h>
 #include <math.h>
@@ -11,6 +13,7 @@ static bool   g_hasTargetBearing = false;
 static double g_targetBearingDeg = 0.0;
 static double g_targetLatDeg     = NAN;
 static double g_targetLngDeg     = NAN;
+static double g_referenceHeading = 0.0; // or set by calibration
 
 // Current LED flow mode (default: Input)
 static LedMode g_mode = LedMode::Input;
@@ -89,10 +92,11 @@ void taskLED(void* pvParameters) {
         if (!isnan(g_targetLatDeg) && !isnan(g_targetLngDeg)) {
             GpsFix fix;
             if (getLatestFix(fix) && fix.valid) {
-                const double dist = haversineMeters(fix.lat, fix.lng, g_targetLatDeg, g_targetLngDeg);
-                withinArrival     = (dist < Config::ARRIVAL_DISTANCE_M);
-                absBearingDeg     = bearingBetweenDeg(fix.lat, fix.lng, g_targetLatDeg, g_targetLngDeg);
-                haveAbsBearing    = true;
+                const double dist =
+                        haversineMeters(fix.lat, fix.lng, g_targetLatDeg, g_targetLngDeg);
+                withinArrival = (dist < Config::ARRIVAL_DISTANCE_M);
+                absBearingDeg = bearingBetweenDeg(fix.lat, fix.lng, g_targetLatDeg, g_targetLngDeg);
+                haveAbsBearing = true;
             }
         }
 
@@ -113,9 +117,9 @@ void taskLED(void* pvParameters) {
             // Green pulse while capturing input
             unsigned long now = millis();
             if (now - lastPulseMs > Config::LED_PULSE_UPDATE_MS) {
-                lastPulseMs = now;
+                lastPulseMs       = now;
                 static int8_t dir = Config::LED_PULSE_STEP;
-                int          v   = (int)pulseVal + dir;
+                int           v   = (int)pulseVal + dir;
                 if (v >= Config::LED_PULSE_MAX) {
                     v   = Config::LED_PULSE_MAX;
                     dir = -Config::LED_PULSE_STEP;
@@ -130,9 +134,9 @@ void taskLED(void* pvParameters) {
             // Yellow glow/pulse while processing
             unsigned long now = millis();
             if (now - lastPulseMs > Config::LED_PULSE_UPDATE_MS) {
-                lastPulseMs = now;
+                lastPulseMs       = now;
                 static int8_t dir = Config::LED_PULSE_STEP;
-                int          v   = (int)pulseVal + dir;
+                int           v   = (int)pulseVal + dir;
                 if (v >= Config::LED_PULSE_MAX) {
                     v   = Config::LED_PULSE_MAX;
                     dir = -Config::LED_PULSE_STEP;
@@ -143,28 +147,22 @@ void taskLED(void* pvParameters) {
                 pulseVal = (uint8_t)v;
             }
             fill_solid(leds, Config::NUM_LEDS, CRGB(pulseVal, pulseVal, 0));
-        } else if (!isnan(heading) && (haveAbsBearing || g_hasTargetBearing)) {
-            const double bearingBase = haveAbsBearing ? absBearingDeg : g_targetBearingDeg;
-            double       rel         = bearingBase - (double)heading;
-            rel        = fmod(rel, 360.0);
-            if (rel < 0)
-                rel += 360.0;
+        } else if (g_mode == LedMode::Navigating) {
+            if (!isnan(g_targetLatDeg) && !isnan(g_targetLngDeg)) {
+                GpsFix fix;
+                if (getLatestFix(fix) && fix.valid) {
+                    OrientationResult o = computeOrientation(fix.lat, fix.lng, g_targetLatDeg,
+                                                             g_targetLngDeg, g_referenceHeading);
 
-            int center   = (bearingToIndex(rel) + Config::LED_NORTH_OFFSET) % Config::NUM_LEDS;
-            leds[center] = CRGB::Blue;
-            leds[(center + 1) % Config::NUM_LEDS]                    = CRGB(0, 0, 64);
-            leds[(center + Config::NUM_LEDS - 1) % Config::NUM_LEDS] = CRGB(0, 0, 64);
-            if (center != lastCenter) {
-                Serial.printf("[LED] Target rel %.1f° -> LED #%d (offset %d)\n", rel, center,
-                              Config::LED_NORTH_OFFSET);
-                lastCenter = center;
+                    displayOrientationLED(o);
+                } else {
+                    Serial.println("[LED] No valid GPS fix for orientation.");
+                }
+            } else {
+                Serial.println("[LED] No valid target coordinates for orientation.");
             }
-        } else {
-            fill_solid(leds, Config::NUM_LEDS, CRGB::Blue);
-            Serial.println("[LED] Missing target/heading... showing solid blue.");
-        }
 
-        FastLED.show();
-        vTaskDelay(Config::LED_TASK_PERIOD_MS / portTICK_PERIOD_MS);
+            FastLED.show();
+            vTaskDelay(Config::LED_TASK_PERIOD_MS / portTICK_PERIOD_MS);
+        }
     }
-}
