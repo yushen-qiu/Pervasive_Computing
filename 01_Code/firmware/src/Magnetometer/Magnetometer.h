@@ -1,11 +1,11 @@
 #ifndef MAGNETOMETER_H
 #define MAGNETOMETER_H
 
-#include <Arduino.h>
 #include <Adafruit_MMC56x3.h>
+#include <Arduino.h>
 
 struct HeadingData {
-    float heading;
+    float  heading;
     String direction;
 };
 
