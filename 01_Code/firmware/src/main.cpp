@@ -84,66 +84,69 @@
 // 	lastButtonState = reading;
 // }
 
-#include "GPS/GPS_Coords/GPS_Coords.h"
-#include "GPS/GPS_Module/GPSModule.h"
-#include "Magnetometer/Magnetometer.h"
-
-void setup() {
-    Serial.begin(115200);
-    initGPS();
-    setupMagnetometer();
-}
-
-void loop() {
-    String coords = GPS_Coords();
-    Serial.println(coords);
-
-    HeadingData headingData = getMagnetometerReading();
-    Serial.println("Heading: " + String(headingData.heading) +
-                   "°  Direction: " + String(headingData.direction));
-
-    delay(1000);
-}
-
 // #include "GPS/GPS_Coords/GPS_Coords.h"
-// #include "GPS/Navigation/Navigation.h"
+// #include "GPS/GPS_Module/GPSModule.h"
+// #include "Magnetometer/Magnetometer.h"
 
 // void setup() {
 //     Serial.begin(115200);
+//     initGPS();
+//     setupMagnetometer();
 // }
 
 // void loop() {
-//     // Example simulated GPS data
-//     String coords = GPS_Coords(); // Or just use a test string
+//     String coords = GPS_Coords();
 //     Serial.println(coords);
 
-//     // ---- Parse "lat, lng" string into numbers ----
-//     double currentLat = 0.0, currentLng = 0.0;
-//     int    commaIndex = coords.indexOf(',');
-//     if (commaIndex > 0) {
-//         String latStr = coords.substring(0, commaIndex);
-//         String lngStr = coords.substring(commaIndex + 1);
-//         latStr.trim();
-//         lngStr.trim();
-//         currentLat = latStr.toDouble();
-//         currentLng = lngStr.toDouble();
-//     } else {
-//         Serial.println("⚠️ Invalid coordinate format!");
-//         delay(2000);
-//         return;
-//     }
+//     HeadingData headingData = getMagnetometerReading();
+//     Serial.println("Heading: " + String(headingData.heading) +
+//                    "°  Direction: " + String(headingData.direction));
 
-//     // ---- Define destination coordinates ----
-//     double destLat = -33.889938;
-//     double destLng = 151.192437;
-
-//     // ---- Compute navigation ----
-//     NavigationData nav = computeNavigation(currentLat, currentLng, destLat, destLng);
-
-//     // ---- Print results ----
-//     Serial.printf("Distance to target: %.2f m\n", nav.distanceMeters);
-//     Serial.printf("Bearing to target : %.1f° from North\n", nav.bearingToDest);
-//     Serial.printf("ETA (walking)     : %.1f min\n", nav.etaMinutes);
-
-//     delay(3000);
+//     delay(1000);
 // }
+
+#include <Arduino.h>
+#include <GPS/GPS_Module/GPSModule.h>
+#include <Integration/NavigationLED/NavigationLED.h>
+#include <Integration/Orientation/Orientation.h>
+#include <Integration/OrientationLED/OrientationLED.h>
+#include <LED/LEDModule.h>
+#include <Magnetometer/Magnetometer.h>
+
+double refHeading = NAN;
+
+void setup() {
+    Serial.begin(115200);
+    initLED();
+    initGPS();
+    xTaskCreate(taskGPS, "GPS", 4096, nullptr, 1, nullptr);
+    if (!Magnetometer::begin()) {
+        Serial.println("Magnetometer init failed!");
+        while (1)
+            delay(100);
+    }
+    Magnetometer::startCalibration();
+    delay(10000);
+    Magnetometer::stopCalibration();
+    refHeading = Magnetometer::headingDeg();
+
+    Serial.printf("%.2f°\n", refHeading);
+}
+
+void loop() {
+    double destLat = -33.889938;
+    double destLng = 151.192437;
+    GpsFix fix;
+    if (getLatestFix(fix) && fix.valid) {
+        NavigationData nav = computeNavigation(fix.lat, fix.lng, destLat, destLng);
+        handleNavigationLED(nav);
+
+        OrientationResult o = computeOrientation(fix.lat, fix.lng, destLat, destLng, refHeading);
+        displayOrientationLED(o);
+    }
+
+    OrientationResult o = computeOrientation(fix.lat, fix.lng, destLat, destLng, refHeading);
+    displayOrientationLED(o);
+
+    delay(500);
+}

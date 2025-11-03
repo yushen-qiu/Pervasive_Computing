@@ -1,194 +1,194 @@
-// #include <Adafruit_MMC56x3.h>
-// #include <Arduino.h>
-#include "Magnetometer.h"
-
+// Magnetometer module implementation for MMC5603
+#include <./Magnetometer.h>
+#include <Adafruit_MMC56x3.h>
+#include <Arduino.h>
 #include <Wire.h>
 
-Adafruit_MMC5603 mag = Adafruit_MMC5603(12345);
+namespace Magnetometer {
 
-// Magnetic declination (Sydney ~12.82° East)
-float declinationAngle = 12.82;
+    static Adafruit_MMC5603 mag(12345);
 
-// Calibration data
-float mag_min[3] = {10000, 10000, 10000};
-float mag_max[3] = {-10000, -10000, -10000};
-float offset[3]  = {0, 0, 0};
-float scale[3]   = {1, 1, 1};
+    // Site-specific declination (Sydney ~12.82° East)
+    static float declinationDeg = 12.82f;
+    static float northOffsetDeg = 0.0f;
 
-// Heading offset for manual north correction
-float northOffset = 0.0; // degrees
+    // Calibration state
+    static bool  calibrating = false;
+    static float magMin[3]   = {10000, 10000, 10000};
+    static float magMax[3]   = {-10000, -10000, -10000};
+    static float offset[3]   = {0, 0, 0};
+    static float scale[3]    = {1, 1, 1};
 
-// Modes
-bool          calibrating = true;
-unsigned long lastPrint   = 0;
+    // Last computed heading
+    static float heading_deg = NAN;
 
-void computeCalibration();
+    // One-time auto calibration window
+    static bool                autoCalibrating     = false;
+    static unsigned long       autoCalibStartMs    = 0;
+    static const unsigned long autoCalibDurationMs = 10000; // 10s
 
-// Generalize conversion of bearings to simple cardinal directions (e.g. N,S,E,W)
-String getDirection(float heading) {
-    int sector = (int)((heading + 45) / 90);
-    sector     = sector % 4;
-    switch (sector) {
-        case 0:
-            return "North";
-        case 1:
-            return "East";
-        case 2:
-            return "South";
-        case 3:
-            return "West";
-        default:
+    static void computeCalibration_() {
+        for (int i = 0; i < 3; i++) {
+            offset[i] = (magMax[i] + magMin[i]) / 2.0f;
+        }
+        const float avg_range =
+                ((magMax[0] - magMin[0]) + (magMax[1] - magMin[1]) + (magMax[2] - magMin[2])) /
+                6.0f;
+        for (int i = 0; i < 3; i++) {
+            const float range = (magMax[i] - magMin[i]) / 2.0f;
+            scale[i]          = (range > 0.0001f) ? (avg_range / range) : 1.0f;
+        }
+    }
+
+    static const char* directionFromHeading_(float h) {
+        if (isnan(h))
             return "Unknown";
-    }
-}
-
-// Checks connection with Magnetometer
-void setupMagnetometer() {
-    Serial.begin(115200);
-    delay(1000);
-    Serial.println("MMC5603 Magnetometer Calibration & Heading with North Offset");
-
-    if (!mag.begin(MMC56X3_DEFAULT_ADDRESS, &Wire)) {
-        Serial.println("No MMC5603 detected!");
-        while (1)
-            ;
-    }
-
-    Serial.println("\nRotate the sensor slowly in all directions to calibrate.");
-    Serial.println("Press any key in Serial Monitor when done to lock calibration.\n");
-    Serial.println(
-            "After calibration, point sensor to actual north and press 'n' to set northoffset.\n");
-}
-
-HeadingData getMagnetometerReading() {
-    sensors_event_t magEvent;
-    mag.getEvent(&magEvent);
-
-    // Init data
-    HeadingData data = {0.0, "Unknown"};
-
-    float mx = magEvent.magnetic.x;
-    float my = magEvent.magnetic.y;
-    float mz = magEvent.magnetic.z;
-
-    // Update minmax calibration values
-    if (calibrating) {
-        if (mx < mag_min[0])
-            mag_min[0] = mx;
-        if (my < mag_min[1])
-            mag_min[1] = my;
-        if (mz < mag_min[2])
-            mag_min[2] = mz;
-
-        if (mx > mag_max[0])
-            mag_max[0] = mx;
-        if (my > mag_max[1])
-            mag_max[1] = my;
-        if (mz > mag_max[2])
-            mag_max[2] = mz;
-
-        // Calibration Mode: Print live values every 500 ms
-        if (millis() - lastPrint > 500) {
-            lastPrint = millis();
-            Serial.print("Raw X:");
-            Serial.print(mx, 2);
-            Serial.print(" Y:");
-            Serial.print(my, 2);
-            Serial.print(" Z:");
-            Serial.println(mz, 2);
-            Serial.println("Keep rotating...");
+        int sector = (int)((h + 45.0f) / 90.0f) & 3; // 0..3
+        switch (sector) {
+            case 0:
+                return "North";
+            case 1:
+                return "East";
+            case 2:
+                return "South";
+            case 3:
+                return "West";
         }
-        // End calibration: Upon any input in Serial Monitor
-        if (Serial.available()) {
-            calibrating = false;
-            Serial.read(); // Buffer clear
-            computeCalibration();
-        }
-        return data;
+        return "Unknown";
     }
-    // Apply calibration
-    float mx_c = (mx - offset[0]) * scale[0];
-    float my_c = (my - offset[1]) * scale[1];
-    float mz_c = (mz - offset[2]) * scale[2];
 
-    // Compute heading
-    float heading = atan2(mx_c, my_c) * 180.0 / PI;
-    if (heading < 0)
-        heading += 360.0;
+    static void taskMag_(void* pv) {
+        (void)pv;
+        uint32_t lastPrint = 0;
+        for (;;) {
+            update();
 
-    // Apply declination & north offset
-    heading += declinationAngle + northOffset;
-    while (heading < 0)
-        heading += 360.0;
-    while (heading >= 360.0)
-        heading -= 360.0;
+            // Handle one-time auto-calibration
+            if (autoCalibrating && (millis() - autoCalibStartMs >= autoCalibDurationMs)) {
+                stopCalibration();
+                autoCalibrating = false;
+                Serial.println("[Mag] Calibration complete. Using calibrated heading.");
+            }
 
-    // Update return data:
-    data.heading   = heading;
-    data.direction = getDirection(heading);
+            // Optional serial controls: 'n' to set current as north, 'r' to reset offset
+            if (Serial.available() > 0) {
+                char c = (char)Serial.read();
+                if (c == 'n' || c == 'N') {
+                    float h = headingDeg();
+                    if (!isnan(h)) {
+                        setNorthOffset(-h);
+                        Serial.printf("[Mag] North set to current heading. Offset=%.2f°\n", -h);
+                    } else {
+                        Serial.println("[Mag] Heading not available yet; cannot set north.");
+                    }
+                } else if (c == 'r' || c == 'R') {
+                    setNorthOffset(0.0f);
+                    Serial.println("[Mag] North offset reset to 0°");
+                }
+            }
 
-    // Check Input ('n'): Manual north calibration
-    if (Serial.available()) {
-        char c = Serial.read();
-
-        // Set current direction as north
-        if (c == 'n') {
-            northOffset = 0.0 - heading;
-            while (northOffset > 180.0)
-                northOffset -= 360.0;
-            while (northOffset <= -180.0)
-                northOffset += 360.0;
-            Serial.print("Manual north set. Heading offset = ");
-            Serial.println(northOffset, 2);
-        }
-
-        // Reset offset
-        if (c == 'r') {
-            northOffset = 0.0;
-            Serial.println("North Heading offset reset to 0°");
+            if (!isCalibrating()) {
+                if (millis() - lastPrint > 1000) {
+                    float h = headingDeg();
+                    if (!isnan(h)) {
+                        const char* dir = directionFromHeading_(h);
+                        Serial.printf("[Mag] heading=%.1f° (%s)\n", h, dir);
+                    }
+                    lastPrint = millis();
+                }
+            }
+            vTaskDelay(100 / portTICK_PERIOD_MS);
         }
     }
 
-    return data;
-}
-
-// Calibration Phase
-void startCalibration() {
-    calibrating = true;
-}
-
-// Compute calibration offsets and scales
-void computeCalibration() {
-    // Normalize scaling
-    float avg_range =
-            ((mag_max[0] - mag_min[0]) + (mag_max[1] - mag_min[1]) + (mag_max[2] - mag_min[2])) /
-            6.0;
-
-    for (int i = 0; i < 3; i++) {
-        // Hard-iron correction
-        offset[i] = (mag_max[i] + mag_min[i]) / 2.0;
-
-        // Soft-iron correction
-        float range = (mag_max[i] - mag_min[i]) / 2.0;
-        scale[i]    = avg_range / range;
+    bool begin(uint8_t i2c_addr) {
+        if (!mag.begin(i2c_addr, &Wire)) {
+            return false;
+        }
+        // Start background task to update and print heading
+        xTaskCreate(taskMag_, "Mag", 4096, nullptr, 1, nullptr);
+        // Begin one-time auto calibration
+        Serial.println("[Mag] Calibrating... rotate sensor slowly for 10s");
+        startCalibration();
+        autoCalibrating  = true;
+        autoCalibStartMs = millis();
+        return true;
     }
 
-    Serial.println("\nCalibration complete!");
-    Serial.println("Offsets (µT):");
-    Serial.print("X: ");
-    Serial.print(offset[0], 2);
-    Serial.print("  Y: ");
-    Serial.print(offset[1], 2);
-    Serial.print("  Z: ");
-    Serial.println(offset[2], 2);
+    void update() {
+        sensors_event_t magEvent;
+        mag.getEvent(&magEvent);
 
-    Serial.println("Scales:");
-    Serial.print("X: ");
-    Serial.print(scale[0], 3);
-    Serial.print("  Y: ");
-    Serial.print(scale[1], 3);
-    Serial.print("  Z: ");
-    Serial.println(scale[2], 3);
+        const float mx = magEvent.magnetic.x;
+        const float my = magEvent.magnetic.y;
+        const float mz = magEvent.magnetic.z;
 
-    Serial.println("\nNow showing calibrated heading...");
-}
+        if (calibrating) {
+            if (mx < magMin[0])
+                magMin[0] = mx;
+            if (my < magMin[1])
+                magMin[1] = my;
+            if (mz < magMin[2])
+                magMin[2] = mz;
+            if (mx > magMax[0])
+                magMax[0] = mx;
+            if (my > magMax[1])
+                magMax[1] = my;
+            if (mz > magMax[2])
+                magMax[2] = mz;
+            return;
+        }
+
+        // Apply calibration
+        const float mx_c = (mx - offset[0]) * scale[0];
+        const float my_c = (my - offset[1]) * scale[1];
+        (void)mz; // heading uses X/Y on flat plane
+
+        float h = atan2f(mx_c, my_c) * 180.0f / PI;
+        if (h < 0)
+            h += 360.0f;
+
+        // Declination + manual north offset
+        h += declinationDeg;
+        while (h >= 360.0f)
+            h -= 360.0f;
+        while (h < 0.0f)
+            h += 360.0f;
+
+        h += northOffsetDeg;
+        while (h >= 360.0f)
+            h -= 360.0f;
+        while (h < 0.0f)
+            h += 360.0f;
+
+        heading_deg = h;
+    }
+
+    float headingDeg() {
+        return heading_deg;
+    }
+
+    void setDeclination(float deg) {
+        declinationDeg = deg;
+    }
+
+    void setNorthOffset(float deg) {
+        northOffsetDeg = deg;
+    }
+
+    void startCalibration() {
+        calibrating = true;
+        magMin[0] = magMin[1] = magMin[2] = 10000.0f;
+        magMax[0] = magMax[1] = magMax[2] = -10000.0f;
+    }
+
+    void stopCalibration() {
+        calibrating = false;
+        computeCalibration_();
+    }
+
+    bool isCalibrating() {
+        return calibrating;
+    }
+
+} // namespace Magnetometer

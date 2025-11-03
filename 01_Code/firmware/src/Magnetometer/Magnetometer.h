@@ -1,23 +1,28 @@
-#ifndef MAGNETOMETER_H
-#define MAGNETOMETER_H
-
-#include <Adafruit_MMC56x3.h>
+#pragma once
 #include <Arduino.h>
 
-struct HeadingData {
-    float  heading;
-    String direction;
-};
+namespace Magnetometer {
 
-void setupMagnetometer();
-void startCalibration();
+    // Initialise the MMC5603 over I2C. Returns true on success.
+    bool begin(uint8_t i2c_addr = 0x30);
 
-HeadingData getMagnetometerReading();
+    // Polls the sensor and updates internal heading state. Call regularly (module also
+    // runs a background task, so this is optional for basic usage).
+    void update();
 
-extern float northOffset;
-extern bool calibrating;
+    // Latest heading in degrees (0..360). Returns NAN until first valid reading.
+    float headingDeg();
 
-#endif
+    // Optional helpers
+    void setDeclination(float deg); // Magnetic declination compensation (degrees)
+    void setNorthOffset(float deg); // Manual north offset (degrees)
+
+    // Calibration control: collect min/max then compute hard/soft iron compensation.
+    void startCalibration();
+    void stopCalibration();
+    bool isCalibrating();
+
+} // namespace Magnetometer
 
 // String getDirection(float heading);
 
