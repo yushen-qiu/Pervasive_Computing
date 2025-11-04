@@ -1,8 +1,8 @@
 #include <Arduino.h>
-#include <GPS/Navigation/Navigation.h> // for computeNavigation()
-#include <Magnetometer/Magnetometer.h>
-#include <Orientation.h>
 #include <math.h>
+#include <sensors/Magnetometer.h>
+#include <sensors/Navigation.h> // for computeNavigation()
+#include <sensors/Orientation.h>
 
 OrientationResult computeOrientation(double currentLat, double currentLng, double destLat,
                                      double destLng, double referenceHeading) {

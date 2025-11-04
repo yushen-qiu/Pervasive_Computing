@@ -1,17 +1,6 @@
-#include <GPS/Navigation/Navigation.h>
 #include <math.h>
+#include <sensors/Navigation.h>
 
-/*
- * Compute the great-circle distance and bearing between
- * current GPS location and a destination point using
- * the Haversine formula.
- *
- * Notes:
- * - Distance result in meters
- * - Bearing measured clockwise from North (0°)
- * - ETA (Estimated Time of Arrival) assumes
- *   average walking speed of 1.4 m/s (~5 km/h)
- */
 NavigationData computeNavigation(double currentLat, double currentLng, double destLat,
                                  double destLng) {
     NavigationData nav{};

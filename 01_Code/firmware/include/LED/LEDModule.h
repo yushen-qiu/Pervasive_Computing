@@ -1,9 +1,8 @@
 #pragma once
-#include "GPS/GPS_Module/GPSModule.h"
-#include <Orientation.h>
-
 #include <Arduino.h>
 #include <FastLED.h>
+#include <sensors/GPS.h>
+#include <sensors/Orientation.h>
 
 #define LED_PIN 4
 #define NUM_LEDS 16
@@ -21,8 +20,8 @@ void showDirection(double bearingDeg);
 void displayOrientationLED(const OrientationResult& o);
 
 #pragma once
-#include "GPS/Navigation/Navigation.h"
 #include "LED/LEDModule.h"
+#include "sensors/Navigation.h"
 
 #include <Arduino.h>
 #include <FastLED.h>

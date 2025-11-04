@@ -1,19 +1,18 @@
-#include "AI.h"
 #include "LED/LEDModule.h"
-#include "Magnetometer/Magnetometer.h"
-#include "Orientation.h"
-#include "Places.h"
-#include "Weather.h"
+#include "apis/AI.h"
+#include "apis/Places.h"
+#include "apis/Weather.h"
+#include "sensors/GPS.h"
+#include "sensors/Magnetometer.h"
+#include "sensors/Orientation.h"
 
 #include <Arduino.h>
-#include <GPS/GPS_Module/GPSModule.h>
 #include <WiFi.h>
+#include <config/Secrets.h>
 
-const char* ssid     = "";
-const char* password = "";
-double      destLat;
-double      destLng;
-double      refHeading = NAN;
+double destLat;
+double destLng;
+double refHeading = NAN;
 #define BUTTON_PIN 14
 
 int           buttonState;
@@ -35,7 +34,7 @@ void setup() {
     Serial.println("Waiting for first button press...");
 
     // Connect WiFi
-    WiFi.begin(ssid, password);
+    WiFi.begin(Config::WIFI_SSID, Config::WIFI_PASSWORD);
     Serial.print("Connecting to WiFi");
     while (WiFi.status() != WL_CONNECTED) {
         delay(500);

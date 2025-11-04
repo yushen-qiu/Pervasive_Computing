@@ -1,9 +1,7 @@
-#include "AI.h"
-
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
-
-const char* geminiApiKey = "";
+#include <apis/AI.h>
+#include <config/Secrets.h>
 
 const char* allPlaceTypes[] = {"beach",
                                "art_gallery",
@@ -43,7 +41,7 @@ String queryGemini(String weatherCondition, String localTime) {
     http.setTimeout(30000);
     String url = "https://generativelanguage.googleapis.com/v1beta/models/"
                  "gemini-2.5-flash:generateContent?key=" +
-                 String(geminiApiKey);
+                 String(Config::GEMINI_API_KEY);
     http.begin(url);
     http.addHeader("Content-Type", "application/json");
 

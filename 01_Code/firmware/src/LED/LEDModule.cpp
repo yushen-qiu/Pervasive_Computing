@@ -1,6 +1,6 @@
 #include <LED/LEDModule.h>
-#include <Orientation.h>
 #include <math.h>
+#include <sensors/Orientation.h>
 
 CRGB        leds[NUM_LEDS];
 static bool triggered100m = false;

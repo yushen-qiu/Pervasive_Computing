@@ -1,8 +1,8 @@
 // Magnetometer module implementation for MMC5603
 #include <Adafruit_MMC56x3.h>
 #include <Arduino.h>
-#include <Magnetometer/Magnetometer.h>
 #include <Wire.h>
+#include <sensors/Magnetometer.h>
 
 namespace Magnetometer {
 

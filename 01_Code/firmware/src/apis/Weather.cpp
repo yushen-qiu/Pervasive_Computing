@@ -1,16 +1,15 @@
-#include "Weather.h"
-
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
-
-const char* weatherApiKey = "";
+#include <apis/Weather.h>
+#include <config/Secrets.h>
 
 void fetchWeather(String& condition, String& localTime, double lat, double lng) {
     if (WiFi.status() != WL_CONNECTED)
         return;
 
     HTTPClient http;
-    String     url = "http://api.weatherapi.com/v1/current.json?key=" + String(weatherApiKey) +
+    String     url = "http://api.weatherapi.com/v1/current.json?key=" +
+                 String(Config::WEATHER_API_KEY) +
                  "&q=" + String(lat, 6) + "," + String(lng, 6);
     http.begin(url);
     int httpCode = http.GET();
