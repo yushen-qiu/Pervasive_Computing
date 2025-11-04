@@ -34,5 +34,7 @@ extern volatile double currentSpeed;
 extern volatile double currentLat;
 extern volatile double currentLng;
 
-void initGPS();
-void taskGPS(void* pvParameters);
+void   initGPS();
+void   taskGPS(void* pvParameters);
+double getLng();
+double getLat();

@@ -44,3 +44,11 @@ void taskGPS(void* pvParameters) {
         vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 }
+
+double getLat() {
+    return currentLat;
+}
+
+double getLng() {
+    return currentLng;
+}

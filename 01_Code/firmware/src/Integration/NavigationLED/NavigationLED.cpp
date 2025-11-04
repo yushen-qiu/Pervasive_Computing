@@ -23,6 +23,34 @@ static void breatheYellowTwice() {
     FastLED.show();
 }
 
+static void showGreen() {
+    fill_solid(leds, NUM_LEDS, CRGB(0, b, 0));
+    FastLED.show();
+}
+
+static void turnOff() {
+    FastLED.clear();
+}
+
+static void breatheGreen() {
+    for (int cycle = 0; cycle < 2; cycle++) {
+        for (int b = 0; b <= 255; b += 5) {
+            // Green channel only: R=0, G=b, B=0
+            fill_solid(leds, NUM_LEDS, CRGB(0, b, 0));
+            FastLED.show();
+            delay(8);
+        }
+        for (int b = 255; b >= 0; b -= 5) {
+            // Green channel only: R=0, G=b, B=0
+            fill_solid(leds, NUM_LEDS, CRGB(0, b, 0));
+            FastLED.show();
+            delay(8);
+        }
+    }
+    FastLED.clear();
+    FastLED.show();
+}
+
 //----------------------------------------------
 // 50m Note: Rainbow effect for 5 seconds
 //----------------------------------------------

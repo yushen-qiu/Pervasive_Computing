@@ -6,3 +6,8 @@
 #include <FastLED.h>
 
 void handleNavigationLED(const NavigationData& nav);
+void breatheGreen();
+void turnOff();
+void showGreen();
+void rainbowEffect5s();
+void breatheYellowTwice();
