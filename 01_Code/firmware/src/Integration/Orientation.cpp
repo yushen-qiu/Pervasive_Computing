@@ -1,14 +1,9 @@
 #include <Arduino.h>
+#include <Integration/Orientation.h>
 #include <Integration/Navigation.h> // for computeNavigation()
 #include <math.h>
 #include <sensors/GPSModule.h>
 #include <sensors/Magnetometer.h>
-
-struct OrientationResult {
-    double currentHeading; // current facing direction (absolute from north)
-    double targetBearing;  // absolute bearing to destination
-    double relativeAngle;  // difference between facing and target (0° = facing target)
-};
 
 /*
  * Compute the orientation and relative angle between

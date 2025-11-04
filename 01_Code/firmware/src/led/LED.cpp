@@ -1,5 +1,7 @@
 #include <Integration/Orientation.h>
 #include <Integration/OrientationLED.h>
+#include <Integration/Navigation.h>
+#include <Integration/NavigationLED.h>
 #include <config/Config.h>
 #include <led/LEDModule.h>
 #include <math.h>
@@ -151,11 +153,12 @@ void taskLED(void* pvParameters) {
             if (!isnan(g_targetLatDeg) && !isnan(g_targetLngDeg)) {
                 GpsFix fix;
                 if (getLatestFix(fix) && fix.valid) {
-                    NavigationData nav = computeNavigation(fix.lat, fix.lng, destLat, destLng);
+                    NavigationData nav =
+                            computeNavigation(fix.lat, fix.lng, g_targetLatDeg, g_targetLngDeg);
                     handleNavigationLED(nav);
 
-                    OrientationResult o =
-                            computeOrientation(fix.lat, fix.lng, destLat, destLng, refHeading);
+                    OrientationResult o = computeOrientation(
+                            fix.lat, fix.lng, g_targetLatDeg, g_targetLngDeg, g_referenceHeading);
                     displayOrientationLED(o);
                 } else {
                     Serial.println("[LED] No valid GPS fix for orientation.");
