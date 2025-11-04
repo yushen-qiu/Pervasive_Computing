@@ -27,7 +27,7 @@ namespace Magnetometer {
     static unsigned long       autoCalibStartMs    = 0;
     static const unsigned long autoCalibDurationMs = 10000; // 10s
 
-    static void computeCalibration_() {
+    static void computeCalibration() {
         for (int i = 0; i < 3; i++) {
             offset[i] = (magMax[i] + magMin[i]) / 2.0f;
         }
@@ -178,13 +178,11 @@ namespace Magnetometer {
 
     void startCalibration() {
         calibrating = true;
-        magMin[0] = magMin[1] = magMin[2] = 10000.0f;
-        magMax[0] = magMax[1] = magMax[2] = -10000.0f;
+        computeCalibration();
     }
 
     void stopCalibration() {
         calibrating = false;
-        computeCalibration_();
     }
 
     bool isCalibrating() {

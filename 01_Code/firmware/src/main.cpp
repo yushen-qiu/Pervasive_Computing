@@ -35,10 +35,10 @@ void setup() {
 
     // Connect WiFi
     WiFi.begin(Config::WIFI_SSID, Config::WIFI_PASSWORD);
-    Serial.print("Connecting to WiFi");
+    Serial.println("Connecting to WiFi");
     while (WiFi.status() != WL_CONNECTED) {
-        delay(500);
-        Serial.print("Retry connecting the WIFI!");
+        delay(2000);
+        Serial.println("Retry connecting the WIFI!");
     }
     Serial.println("\nWiFi Connected!");
 
