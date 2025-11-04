@@ -2,7 +2,6 @@
 #include <Adafruit_MMC56x3.h>
 #include <Arduino.h>
 #include <Wire.h>
-#include <config/Pins.h>
 #include <sensors/Magnetometer.h>
 
 namespace Magnetometer {
@@ -104,20 +103,14 @@ namespace Magnetometer {
     }
 
     bool begin(uint8_t i2c_addr) {
-        // Ensure I2C is started (uses configured ESP32 pins)
-        Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
-
         if (!mag.begin(i2c_addr, &Wire)) {
-            Serial.println("[Mag] ERROR: MMC5603 not detected on I2C. Check wiring/addr.");
-            initialized = false;
             return false;
         }
-        initialized = true;
         // Start background task to update and print heading
         xTaskCreate(taskMag_, "Mag", 4096, nullptr, 1, nullptr);
-
+        // Begin one-time auto calibration
+        Serial.println("[Mag] Calibrating... rotate sensor slowly for 10s");
         startCalibration();
-        stopCalibration();
         autoCalibrating  = true;
         autoCalibStartMs = millis();
         return true;

@@ -50,7 +50,6 @@ void setup() {
     showColorLED(0, 255, 0);
     if (!Magnetometer::begin()) {
         Serial.println("[ERROR] Magnetometer init failed");
-        showColorLED(255, 0, 0);
     }
 
     refHeading = Magnetometer::headingDeg();

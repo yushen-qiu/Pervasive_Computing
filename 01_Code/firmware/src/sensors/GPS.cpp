@@ -33,7 +33,7 @@ void taskGPS(void* pvParameters) {
         }
 
         static uint32_t lastPrint = 0;
-        if (millis() - lastPrint > 1000) {
+        if (millis() - lastPrint > 5000) {
             Serial.printf("[GPS] fix=%s, sats=%u, hdop=%.1f, speed=%.2f m/s, course=%.1f°, "
                           "lat=%.5f, lon=%.5f\n",
                           gps.location.isValid() ? "OK" : "NO", gps.satellites.value(),
