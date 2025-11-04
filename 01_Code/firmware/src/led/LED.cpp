@@ -166,3 +166,4 @@ void taskLED(void* pvParameters) {
             vTaskDelay(Config::LED_TASK_PERIOD_MS / portTICK_PERIOD_MS);
         }
     }
+}
