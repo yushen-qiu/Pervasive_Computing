@@ -23,16 +23,16 @@ static void breatheYellowTwice() {
     FastLED.show();
 }
 
-static void showGreen() {
-    fill_solid(leds, NUM_LEDS, CRGB(0, b, 0));
+void showGreen() {
+    fill_solid(leds, NUM_LEDS, CRGB(0, 255, 0));
     FastLED.show();
 }
 
-static void turnOff() {
+void turnOff() {
     FastLED.clear();
 }
 
-static void breatheGreen() {
+void breatheGreen() {
     for (int cycle = 0; cycle < 2; cycle++) {
         for (int b = 0; b <= 255; b += 5) {
             // Green channel only: R=0, G=b, B=0
