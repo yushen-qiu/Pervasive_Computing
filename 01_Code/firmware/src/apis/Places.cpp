@@ -2,6 +2,7 @@
 #include <HTTPClient.h>
 #include <apis/Places.h>
 #include <config/Secrets.h>
+static int pressMultiplier = 200;
 
 void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double lng,
                       double& destinationLatitude, double& destinationLongitude) {
@@ -18,7 +19,7 @@ void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double l
                          String(lat, 6) + ", \"longitude\": " + String(lng, 6) +
                          "},"
                          "\"radius\": " +
-                         String(pressCount * 100) +
+                         String(pressCount * pressMultiplier) +
                          "}"
                          "},"
                          "\"includedTypes\": " +

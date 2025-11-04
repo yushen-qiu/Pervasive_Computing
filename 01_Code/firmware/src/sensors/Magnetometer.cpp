@@ -108,9 +108,9 @@ namespace Magnetometer {
         mag.begin(i2c_addr, &Wire);
         // Start background task to update and print heading
         xTaskCreate(taskMag_, "Mag", 4096, nullptr, 1, nullptr);
-        // Begin one-time auto calibration
-        Serial.println("[Mag] Calibrating... rotate sensor slowly for 10s");
+
         startCalibration();
+        stopCalibration();
         autoCalibrating  = true;
         autoCalibStartMs = millis();
     }
@@ -178,6 +178,7 @@ namespace Magnetometer {
 
     void startCalibration() {
         calibrating = true;
+        Serial.println("[Mag] Calibrating... rotate sensor slowly for 10s");
 
         int startTime = millis();
         while (millis() - startTime < 10000) {

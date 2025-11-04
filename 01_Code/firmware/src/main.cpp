@@ -27,6 +27,7 @@ double        latitude         = 0;
 double        longitude        = 0;
 bool          queryGeminiFlag  = false;
 GpsFix        fix;
+String        weatherCondition, localTime;
 
 void setup() {
     Serial.begin(115200);
@@ -49,9 +50,6 @@ void setup() {
     showColorLED(0, 255, 0);
     Magnetometer::begin();
 
-    // Magnetometer::startCalibration();
-    // delay(10000);
-    // Magnetometer::stopCalibration();
     refHeading = Magnetometer::headingDeg();
     turnOffLED();
 
@@ -98,14 +96,14 @@ void loop() {
                 latitude  = getLat();
                 longitude = getLng();
                 showColorLED(0, 0, 0);
-                delay(500);
+                delay(1000);
                 showColorLED(255, 255, 255);
             }
 
             Serial.println("Final press count: " + String(pressCount));
 
             // Fetch Weather
-            String weatherCondition, localTime;
+
             fetchWeather(weatherCondition, localTime, latitude, longitude);
 
             // Query Gemini
