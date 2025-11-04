@@ -3,10 +3,12 @@
 #include <Arduino.h>
 #include <Wire.h>
 #include <sensors/Magnetometer.h>
+#include <config/Pins.h>
 
 namespace Magnetometer {
 
     static Adafruit_MMC5603 mag(12345);
+    static bool             initialized = false;
 
     // Site-specific declination (Sydney ~12.82° East)
     static float declinationDeg = 12.82f;
@@ -101,11 +103,16 @@ namespace Magnetometer {
         }
     }
 
-    void begin(uint8_t i2c_addr) {
-        // if (!mag.begin(i2c_addr, &Wire)) {
-        //     return false;
-        // }
-        mag.begin(i2c_addr, &Wire);
+    bool begin(uint8_t i2c_addr) {
+        // Ensure I2C is started (uses configured ESP32 pins)
+        Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
+
+        if (!mag.begin(i2c_addr, &Wire)) {
+            Serial.println("[Mag] ERROR: MMC5603 not detected on I2C. Check wiring/addr.");
+            initialized = false;
+            return false;
+        }
+        initialized = true;
         // Start background task to update and print heading
         xTaskCreate(taskMag_, "Mag", 4096, nullptr, 1, nullptr);
 
@@ -113,9 +120,13 @@ namespace Magnetometer {
         stopCalibration();
         autoCalibrating  = true;
         autoCalibStartMs = millis();
+        return true;
     }
 
     void update() {
+        if (!initialized) {
+            return;
+        }
         sensors_event_t magEvent;
         mag.getEvent(&magEvent);
 
@@ -144,7 +155,8 @@ namespace Magnetometer {
         const float my_c = (my - offset[1]) * scale[1];
         (void)mz; // heading uses X/Y on flat plane
 
-        float h = atan2f(mx_c, my_c) * 180.0f / PI;
+        // Heading computed from Y (north/east plane) over X
+        float h = atan2f(my_c, mx_c) * 180.0f / PI;
         if (h < 0)
             h += 360.0f;
 

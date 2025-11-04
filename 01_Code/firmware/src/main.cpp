@@ -48,7 +48,10 @@ void setup() {
     xTaskCreate(taskGPS, "GPS", 4096, nullptr, 1, nullptr);
 
     showColorLED(0, 255, 0);
-    Magnetometer::begin();
+    if (!Magnetometer::begin()) {
+        Serial.println("[ERROR] Magnetometer init failed");
+        showColorLED(255, 0, 0);
+    }
 
     refHeading = Magnetometer::headingDeg();
     turnOffLED();
@@ -64,6 +67,7 @@ void loop() {
 
     if (queryGeminiFlag == false) {
         showColorLED(255, 0, 0);
+
         if ((millis() - lastDebounceTime) > debounceDelay) {
             if (reading != buttonState) {
                 buttonState = reading;
@@ -81,6 +85,7 @@ void loop() {
                         delay(50);
                         showColorLED(255, 0, 0);
                     }
+
                     Serial.print("Press count: ");
                     Serial.println(pressCount);
                 }
@@ -114,6 +119,7 @@ void loop() {
             fetchNearbyPlace(filteredPlaceTypes, pressCount, latitude, longitude, destLat, destLng);
             queryGeminiFlag = true;
         }
+
         lastButtonState = reading;
 
     } else {

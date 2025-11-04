@@ -4,7 +4,7 @@
 namespace Magnetometer {
 
     // Initialise the MMC5603 over I2C. Returns true on success.
-    void begin(uint8_t i2c_addr = 0x30);
+    bool begin(uint8_t i2c_addr = 0x30);
 
     // Polls the sensor and updates internal heading state. Call regularly (module also
     // runs a background task, so this is optional for basic usage).
