@@ -151,9 +151,11 @@ void taskLED(void* pvParameters) {
             if (!isnan(g_targetLatDeg) && !isnan(g_targetLngDeg)) {
                 GpsFix fix;
                 if (getLatestFix(fix) && fix.valid) {
-                    OrientationResult o = computeOrientation(fix.lat, fix.lng, g_targetLatDeg,
-                                                             g_targetLngDeg, g_referenceHeading);
+                    NavigationData nav = computeNavigation(fix.lat, fix.lng, destLat, destLng);
+                    handleNavigationLED(nav);
 
+                    OrientationResult o =
+                            computeOrientation(fix.lat, fix.lng, destLat, destLng, refHeading);
                     displayOrientationLED(o);
                 } else {
                     Serial.println("[LED] No valid GPS fix for orientation.");
