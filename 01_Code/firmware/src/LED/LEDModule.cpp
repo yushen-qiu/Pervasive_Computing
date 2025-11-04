@@ -128,6 +128,7 @@ static void breatheYellowTwice() {
 
 void turnOff() {
     FastLED.clear();
+    FastLED.show();
 }
 
 void showColor(int R, int G, int B) {
@@ -135,7 +136,7 @@ void showColor(int R, int G, int B) {
     FastLED.show();
 }
 
-void breatheGreen() {
+static void breatheGreen() {
     for (int cycle = 0; cycle < 2; cycle++) {
         for (int b = 0; b <= 255; b += 5) {
             // Green channel only: R=0, G=b, B=0

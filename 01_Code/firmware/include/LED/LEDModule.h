@@ -3,6 +3,7 @@
 #include <FastLED.h>
 #include <sensors/GPS.h>
 #include <sensors/Orientation.h>
+#include <sensors/Navigation.h>
 
 #define LED_PIN 4
 #define NUM_LEDS 16
@@ -19,15 +20,7 @@ void showDirection(double bearingDeg);
 // Orientation display (moved from OrientationLED.cpp)
 void displayOrientationLED(const OrientationResult& o);
 
-#pragma once
-#include "LED/LEDModule.h"
-#include "sensors/Navigation.h"
-
-#include <Arduino.h>
-#include <FastLED.h>
-
+// Navigation LED helpers
 void handleNavigationLED(const NavigationData& nav);
-void breatheGreen();
 void turnOff();
-void showGreen();
 void showColor(int R, int G, int B);
