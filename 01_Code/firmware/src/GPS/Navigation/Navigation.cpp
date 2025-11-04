@@ -1,5 +1,4 @@
-#include "Navigation.h"
-
+#include <GPS/Navigation/Navigation.h>
 #include <math.h>
 
 /*

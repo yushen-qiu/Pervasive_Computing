@@ -1,14 +1,13 @@
 #include "AI.h"
+#include "LED/LEDModule.h"
+#include "Magnetometer/Magnetometer.h"
+#include "Orientation.h"
+#include "OrientationLED.h"
 #include "Places.h"
 #include "Weather.h"
 
 #include <Arduino.h>
 #include <GPS/GPS_Module/GPSModule.h>
-#include <Integration/NavigationLED/NavigationLED.h>
-#include <Integration/Orientation/Orientation.h>
-#include <Integration/OrientationLED/OrientationLED.h>
-#include <LED/LEDModule.h>
-#include <Magnetometer/Magnetometer.h>
 #include <WiFi.h>
 
 const char* ssid     = "";

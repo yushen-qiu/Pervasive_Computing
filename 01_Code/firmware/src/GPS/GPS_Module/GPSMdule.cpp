@@ -1,4 +1,4 @@
-#include "GPSModule.h"
+#include <GPS/GPS_Module/GPSModule.h>
 
 HardwareSerial GPS(2);
 TinyGPSPlus    gps;

@@ -1,7 +1,5 @@
-#include "GPS_Coords.h"
-
-#include "GPS/GPS_Module/GPSModule.h"
-
+#include <GPS/GPS_Coords/GPS_Coords.h>
+#include <GPS/GPS_Module/GPSModule.h>
 #include <HardwareSerial.h>
 #include <TinyGPSPlus.h>
 

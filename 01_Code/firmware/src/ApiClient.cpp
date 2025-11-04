@@ -75,7 +75,8 @@
 //   String requestBody = "{"
 //     "\"locationRestriction\": {"
 //       "\"circle\": {"
-//         "\"center\": {\"latitude\": " + String(latitude, 6) + ", \"longitude\": " + String(longitude, 6) + "},"
+//         "\"center\": {\"latitude\": " + String(latitude, 6) + ", \"longitude\": " +
+//         String(longitude, 6) + "},"
 //         "\"radius\": 1000"
 //       "}"
 //     "},"
@@ -88,7 +89,8 @@
 //   http.begin("https://places.googleapis.com/v1/places:searchNearby");
 //   http.addHeader("Content-Type", "application/json");
 //   http.addHeader("X-Goog-Api-Key", apiKey);
-//   http.addHeader("X-Goog-FieldMask", "places.displayName,places.formattedAddress,places.types,places.location");
+//   http.addHeader("X-Goog-FieldMask",
+//   "places.displayName,places.formattedAddress,places.types,places.location");
 
 //   int httpCode = http.POST(requestBody);
 //   if (httpCode > 0) {
