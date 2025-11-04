@@ -1,5 +1,6 @@
 #pragma once
 #include "GPS/GPS_Module/GPSModule.h"
+#include <Orientation.h>
 
 #include <Arduino.h>
 #include <FastLED.h>
@@ -15,6 +16,9 @@ extern CRGB leds[NUM_LEDS];
 void initLED();
 void clearLED();
 void showDirection(double bearingDeg);
+
+// Orientation display (moved from OrientationLED.cpp)
+void displayOrientationLED(const OrientationResult& o);
 
 #pragma once
 #include "GPS/Navigation/Navigation.h"
