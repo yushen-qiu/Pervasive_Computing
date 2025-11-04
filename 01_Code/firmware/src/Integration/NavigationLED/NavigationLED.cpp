@@ -32,6 +32,11 @@ void turnOff() {
     FastLED.clear();
 }
 
+void showColor(int R, int G, int B) {
+    fill_solid(leds, NUM_LEDS, CRGB(R, G, B));
+    FastLED.show();
+}
+
 void breatheGreen() {
     for (int cycle = 0; cycle < 2; cycle++) {
         for (int b = 0; b <= 255; b += 5) {

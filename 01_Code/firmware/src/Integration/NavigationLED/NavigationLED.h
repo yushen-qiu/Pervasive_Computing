@@ -9,4 +9,4 @@ void handleNavigationLED(const NavigationData& nav);
 void breatheGreen();
 void turnOff();
 void showGreen();
-
+void showColor(int R, int G, int B);

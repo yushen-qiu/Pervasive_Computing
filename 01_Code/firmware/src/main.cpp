@@ -55,7 +55,7 @@ void setup() {
             delay(100);
     }
 
-    showGreen();
+    showColor(0, 255, 0);
     Magnetometer::startCalibration();
     delay(10000);
     Magnetometer::stopCalibration();
@@ -128,7 +128,6 @@ void loop() {
 
         OrientationResult o = computeOrientation(fix.lat, fix.lng, destLat, destLng, refHeading);
         displayOrientationLED(o);
+        delay(500);
     }
-
-    delay(500);
 }
