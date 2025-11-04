@@ -50,17 +50,17 @@ void setup() {
     if (!Magnetometer::begin()) {
         Serial.println("[ERROR] Magnetometer init failed");
     }
-
-    while (Magnetometer::isAutoCalibrating()) {
-    }
-    turnOffLED();
-    refHeading = Magnetometer::headingDeg();
-
-    Serial.print("[FINISHING SETUP] with heading: ");
-    Serial.println(refHeading);
 }
 
 void loop() {
+    if (Magnetometer::isCalibrating()) {
+        delay(50);
+        return;
+    } else {
+        turnOffLED();
+        refHeading = Magnetometer::headingDeg();
+    }
+
     int reading = digitalRead(BUTTON_PIN);
     if (reading != lastButtonState)
         lastDebounceTime = millis();
