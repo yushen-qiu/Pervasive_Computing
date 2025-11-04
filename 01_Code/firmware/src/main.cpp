@@ -51,8 +51,10 @@ void setup() {
         Serial.println("[ERROR] Magnetometer init failed");
     }
 
-    refHeading = Magnetometer::headingDeg();
+    while (Magnetometer::isAutoCalibrating()) {
+    }
     turnOffLED();
+    refHeading = Magnetometer::headingDeg();
 
     Serial.print("[FINISHING SETUP] with heading: ");
     Serial.println(refHeading);

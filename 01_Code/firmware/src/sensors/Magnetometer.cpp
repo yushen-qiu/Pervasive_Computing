@@ -103,16 +103,17 @@ namespace Magnetometer {
     }
 
     bool begin(uint8_t i2c_addr) {
+        // Ensure I2C is initialized on the configured pins
         if (!mag.begin(i2c_addr, &Wire)) {
             Serial.println("[Mag] ERROR: MMC5603 not detected on I2C");
             initialized = false;
             return false;
         }
+        xTaskCreate(taskMag_, "Mag", 4096, nullptr, 1, nullptr);
         initialized = true;
         startCalibration();
         autoCalibrating  = true;
         autoCalibStartMs = millis();
-        xTaskCreate(taskMag_, "Mag", 4096, nullptr, 1, nullptr);
         return true;
     }
 
@@ -195,6 +196,10 @@ namespace Magnetometer {
 
     bool isCalibrating() {
         return calibrating;
+    }
+
+    bool isAutoCalibrating() {
+        return autoCalibrating;
     }
 
 } // namespace Magnetometer

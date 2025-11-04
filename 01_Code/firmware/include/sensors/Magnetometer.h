@@ -22,4 +22,5 @@ namespace Magnetometer {
     void stopCalibration();
     bool isCalibrating();
     void computeCalibration();
+    bool isAutoCalibrating();
 } // namespace Magnetometer
