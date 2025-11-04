@@ -46,16 +46,12 @@ void setup() {
     initGPS();
     xTaskCreate(taskGPS, "GPS", 4096, nullptr, 1, nullptr);
 
-    if (!Magnetometer::begin()) {
-        Serial.println("Magnetometer init failed!");
-        while (1)
-            delay(100);
-    }
-
     showColor(0, 255, 0);
-    Magnetometer::startCalibration();
-    delay(10000);
-    Magnetometer::stopCalibration();
+    Magnetometer::begin();
+
+    // Magnetometer::startCalibration();
+    // delay(10000);
+    // Magnetometer::stopCalibration();
     refHeading = Magnetometer::headingDeg();
     turnOff();
 
@@ -97,7 +93,7 @@ void loop() {
             windowFinished = true;
 
             while (latitude == 0 && longitude == 0) {
-                Serial.printf("Getting the lat/long again");
+                Serial.println("Getting the lat/long again");
                 latitude  = getLat();
                 longitude = getLng();
                 delay(1000);

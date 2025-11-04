@@ -101,10 +101,11 @@ namespace Magnetometer {
         }
     }
 
-    bool begin(uint8_t i2c_addr) {
-        if (!mag.begin(i2c_addr, &Wire)) {
-            return false;
-        }
+    void begin(uint8_t i2c_addr) {
+        // if (!mag.begin(i2c_addr, &Wire)) {
+        //     return false;
+        // }
+        mag.begin(i2c_addr, &Wire);
         // Start background task to update and print heading
         xTaskCreate(taskMag_, "Mag", 4096, nullptr, 1, nullptr);
         // Begin one-time auto calibration
@@ -112,7 +113,6 @@ namespace Magnetometer {
         startCalibration();
         autoCalibrating  = true;
         autoCalibStartMs = millis();
-        return true;
     }
 
     void update() {
@@ -178,11 +178,17 @@ namespace Magnetometer {
 
     void startCalibration() {
         calibrating = true;
-        computeCalibration();
+
+        int startTime = millis();
+        while (millis() - startTime < 10000) {
+            update();
+            delay(50);
+        }
     }
 
     void stopCalibration() {
         calibrating = false;
+        computeCalibration();
     }
 
     bool isCalibrating() {
