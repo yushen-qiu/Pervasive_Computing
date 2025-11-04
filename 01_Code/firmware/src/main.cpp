@@ -53,7 +53,8 @@ void setup() {
     refHeading = Magnetometer::headingDeg();
     turnOffLED();
 
-    Serial.println("[FINISHING SETUP]\n\n");
+    Serial.print("[FINISHING SETUP] with heading: ");
+    Serial.println(refHeading);
 }
 
 void loop() {
