@@ -126,12 +126,12 @@ static void breatheYellowTwice() {
     FastLED.show();
 }
 
-void turnOff() {
+void turnOffLED() {
     FastLED.clear();
     FastLED.show();
 }
 
-void showColor(int R, int G, int B) {
+void showColorLED(int R, int G, int B) {
     fill_solid(leds, NUM_LEDS, CRGB(R, G, B));
     FastLED.show();
 }

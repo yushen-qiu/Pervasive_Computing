@@ -31,31 +31,31 @@ GpsFix        fix;
 void setup() {
     Serial.begin(115200);
     pinMode(BUTTON_PIN, INPUT_PULLUP);
-    Serial.println("Waiting for first button press...");
+    Serial.println("[STARTING THE SETUP]");
 
     // Connect WiFi
     WiFi.begin(Config::WIFI_SSID, Config::WIFI_PASSWORD);
-    Serial.println("Connecting to WiFi");
+    Serial.println("[CONNECTING WIFI]");
     while (WiFi.status() != WL_CONNECTED) {
         delay(2000);
-        Serial.println("Retry connecting the WIFI!");
+        Serial.println(">> retrying WIFI!");
     }
-    Serial.println("\nWiFi Connected!");
+    Serial.println("\n[WIFI CONNECTED]\n");
 
     initLED();
     initGPS();
     xTaskCreate(taskGPS, "GPS", 4096, nullptr, 1, nullptr);
 
-    showColor(0, 255, 0);
+    showColorLED(0, 255, 0);
     Magnetometer::begin();
 
     // Magnetometer::startCalibration();
     // delay(10000);
     // Magnetometer::stopCalibration();
     refHeading = Magnetometer::headingDeg();
-    turnOff();
+    turnOffLED();
 
-    Serial.printf("%.2f°\n", refHeading);
+    Serial.println("[FINISHING SETUP]\n\n");
 }
 
 void loop() {
@@ -64,6 +64,7 @@ void loop() {
         lastDebounceTime = millis();
 
     if (queryGeminiFlag == false) {
+        showColorLED(255, 0, 0);
         if ((millis() - lastDebounceTime) > debounceDelay) {
             if (reading != buttonState) {
                 buttonState = reading;
@@ -74,12 +75,12 @@ void loop() {
                         startTime      = millis();
                         pressCount     = 0;
                         Serial.println("Started 5-second counting window!");
-                        showColor(255, 0, 0);
+
                     } else if (countingActive) {
                         pressCount++;
-                        turnOff();
+                        turnOffLED();
                         delay(50);
-                        showColor(255, 0, 0);
+                        showColorLED(255, 0, 0);
                     }
                     Serial.print("Press count: ");
                     Serial.println(pressCount);
@@ -88,7 +89,7 @@ void loop() {
         }
 
         if (countingActive && (millis() - startTime > 5000)) {
-            showColor(255, 255, 255);
+            showColorLED(255, 255, 255);
             countingActive = false;
             windowFinished = true;
 
@@ -96,10 +97,12 @@ void loop() {
                 Serial.println("Getting the lat/long again");
                 latitude  = getLat();
                 longitude = getLng();
-                delay(1000);
+                showColorLED(0, 0, 0);
+                delay(500);
+                showColorLED(255, 255, 255);
             }
 
-            Serial.println("Time's up! Final press count locked: " + String(pressCount));
+            Serial.println("Final press count: " + String(pressCount));
 
             // Fetch Weather
             String weatherCondition, localTime;
