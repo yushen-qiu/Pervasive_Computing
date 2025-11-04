@@ -25,7 +25,7 @@ ESP32-E project to build an interactive Gandalf staff.
 | —            | 21    | 34    | —            |
 | —            | 2     | 39    | —            |
 | —            | 13    | 36    | —            |
-| —            | 14    | 12    | —            |
+| Button       | 14    | 12    | —            |
 | —            | 0     | 4     | —            |
 | —            | 26    | 16    | —            |
 | —            | 25    | 17    | —            |

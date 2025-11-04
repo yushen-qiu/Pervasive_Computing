@@ -150,7 +150,7 @@ namespace Magnetometer {
         (void)mz; // heading uses X/Y on flat plane
 
         // Heading computed from Y (north/east plane) over X
-        float h = atan2f(my_c, mx_c) * 180.0f / PI;
+        float h = (atan2f(mx_c, my_c) * 180.0f) / PI;
         if (h < 0)
             h += 360.0f;
 

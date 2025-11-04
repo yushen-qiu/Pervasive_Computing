@@ -25,7 +25,6 @@ void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double l
                          "\"includedTypes\": " +
                          includedTypesJson +
                          ","
-                         "\"rankPreference\": \"DISTANCE\","
                          "\"maxResultCount\": 3"
                          "}";
 
