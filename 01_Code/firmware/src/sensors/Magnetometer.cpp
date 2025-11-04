@@ -2,8 +2,8 @@
 #include <Adafruit_MMC56x3.h>
 #include <Arduino.h>
 #include <Wire.h>
-#include <sensors/Magnetometer.h>
 #include <config/Pins.h>
+#include <sensors/Magnetometer.h>
 
 namespace Magnetometer {
 
@@ -190,6 +190,8 @@ namespace Magnetometer {
 
     void startCalibration() {
         calibrating = true;
+        magMin[0] = magMin[1] = magMin[2] = 10000.0f;
+        magMax[0] = magMax[1] = magMax[2] = -10000.0f;
         Serial.println("[Mag] Calibrating... rotate sensor slowly for 10s");
 
         int startTime = millis();
