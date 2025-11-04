@@ -98,6 +98,7 @@ void loop() {
                 Serial.printf("Getting the lat/long again");
                 latitude  = getLat();
                 longitude = getLng();
+                delay(1000);
             }
 
             Serial.println("Time's up! Final press count locked: " + String(pressCount));
