@@ -120,6 +120,7 @@ void setup() {
     initLED();
     initGPS();
     xTaskCreate(taskGPS, "GPS", 4096, nullptr, 1, nullptr);
+
     if (!Magnetometer::begin()) {
         Serial.println("Magnetometer init failed!");
         while (1)
