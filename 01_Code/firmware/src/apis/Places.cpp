@@ -18,7 +18,7 @@ void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double l
                          String(lat, 6) + ", \"longitude\": " + String(lng, 6) +
                          "},"
                          "\"radius\": " +
-                         String(pressCount * 250) +
+                         String(pressCount * 100) +
                          "}"
                          "},"
                          "\"includedTypes\": " +

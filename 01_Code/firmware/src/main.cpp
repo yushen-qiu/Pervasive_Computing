@@ -78,8 +78,12 @@ void loop() {
                         startTime      = millis();
                         pressCount     = 0;
                         Serial.println("Started 5-second counting window!");
+                        showColor(255, 0, 0);
                     } else if (countingActive) {
                         pressCount++;
+                        turnOff();
+                        delay(50);
+                        showColor(255, 0, 0);
                     }
                     Serial.print("Press count: ");
                     Serial.println(pressCount);
@@ -88,6 +92,7 @@ void loop() {
         }
 
         if (countingActive && (millis() - startTime > 5000)) {
+            showColor(255, 255, 255);
             countingActive = false;
             windowFinished = true;
 

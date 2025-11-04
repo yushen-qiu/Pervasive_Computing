@@ -155,6 +155,39 @@ static void breatheGreen() {
     FastLED.show();
 }
 
+void breatheColorForever(int R, int G, int B) {
+    // Clamp inputs to 0..255
+    auto clamp8 = [](int v) -> uint8_t {
+        if (v < 0)
+            return 0;
+        if (v > 255)
+            return 255;
+        return static_cast<uint8_t>(v);
+    };
+    const uint8_t baseR = clamp8(R);
+    const uint8_t baseG = clamp8(G);
+    const uint8_t baseB = clamp8(B);
+
+    for (;;) {
+        for (int level = 0; level <= 255; level += 5) {
+            uint8_t r = (uint16_t)baseR * level / 255;
+            uint8_t g = (uint16_t)baseG * level / 255;
+            uint8_t b = (uint16_t)baseB * level / 255;
+            fill_solid(leds, NUM_LEDS, CRGB(r, g, b));
+            FastLED.show();
+            delay(8);
+        }
+        for (int level = 255; level >= 0; level -= 5) {
+            uint8_t r = (uint16_t)baseR * level / 255;
+            uint8_t g = (uint16_t)baseG * level / 255;
+            uint8_t b = (uint16_t)baseB * level / 255;
+            fill_solid(leds, NUM_LEDS, CRGB(r, g, b));
+            FastLED.show();
+            delay(8);
+        }
+    }
+}
+
 //----------------------------------------------
 // 50m Note: Rainbow effect for 5 seconds
 //----------------------------------------------

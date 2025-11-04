@@ -24,3 +24,5 @@ void displayOrientationLED(const OrientationResult& o);
 void handleNavigationLED(const NavigationData& nav);
 void turnOff();
 void showColor(int R, int G, int B);
+// Breathing effect in the given RGB color. Blocks forever.
+void breatheColorForever(int R, int G, int B);
