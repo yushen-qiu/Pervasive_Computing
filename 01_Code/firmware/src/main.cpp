@@ -34,7 +34,6 @@ void setup() {
     pinMode(BUTTON_PIN, INPUT_PULLUP);
     Serial.println("[STARTING THE SETUP]");
 
-    // Connect WiFi
     WiFi.begin(Config::WIFI_SSID, Config::WIFI_PASSWORD);
     Serial.println("[CONNECTING WIFI]");
     while (WiFi.status() != WL_CONNECTED) {

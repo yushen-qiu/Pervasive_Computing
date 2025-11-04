@@ -104,15 +104,15 @@ namespace Magnetometer {
 
     bool begin(uint8_t i2c_addr) {
         if (!mag.begin(i2c_addr, &Wire)) {
+            Serial.println("[Mag] ERROR: MMC5603 not detected on I2C");
+            initialized = false;
             return false;
         }
-        // Start background task to update and print heading
-        xTaskCreate(taskMag_, "Mag", 4096, nullptr, 1, nullptr);
-        // Begin one-time auto calibration
-        Serial.println("[Mag] Calibrating... rotate sensor slowly for 10s");
+        initialized = true;
         startCalibration();
         autoCalibrating  = true;
         autoCalibStartMs = millis();
+        xTaskCreate(taskMag_, "Mag", 4096, nullptr, 1, nullptr);
         return true;
     }
 
@@ -186,12 +186,6 @@ namespace Magnetometer {
         magMin[0] = magMin[1] = magMin[2] = 10000.0f;
         magMax[0] = magMax[1] = magMax[2] = -10000.0f;
         Serial.println("[Mag] Calibrating... rotate sensor slowly for 10s");
-
-        int startTime = millis();
-        while (millis() - startTime < 10000) {
-            update();
-            delay(50);
-        }
     }
 
     void stopCalibration() {
