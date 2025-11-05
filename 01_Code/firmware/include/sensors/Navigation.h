@@ -1,10 +1,6 @@
-/*
- * Navigation - Interface
- */
 #pragma once
 #include <Arduino.h>
 
-// Structure to hold navigation results
 struct NavigationData {
     double distanceMeters; // Distance to destination (m)
     double bearingToDest;  // Bearing angle (degrees, 0° = North)

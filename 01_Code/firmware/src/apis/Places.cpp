@@ -1,9 +1,4 @@
-/*
- * Places API
- * ---------------------------------
- * Searches nearby places using Google Places API, picks one result,
- * and outputs destination coordinates.
- */
+// Nearby places search via Google Places API
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 #include <apis/Places.h>

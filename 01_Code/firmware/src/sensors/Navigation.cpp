@@ -1,8 +1,4 @@
-/*
- * Navigation
- * ---------------------------------
- * Computes distance, bearing, and ETA between two coordinates.
- */
+// Compute distance, bearing, and ETA between two coordinates
 #include <math.h>
 #include <sensors/Navigation.h>
 

@@ -1,9 +1,4 @@
-/*
- * Weather API
- * ---------------------------------
- * Fetches current weather and local time for given coordinates
- * using WeatherAPI.
- */
+// Fetch current weather and local time (WeatherAPI)
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 #include <apis/Weather.h>

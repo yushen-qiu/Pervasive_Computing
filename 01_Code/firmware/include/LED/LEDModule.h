@@ -1,8 +1,4 @@
-/*
- * LED Module (API)
- * ---------------------------------
- * Public interface for LED ring/strip control using FastLED.
- */
+// LED ring/strip control (FastLED)
 #pragma once
 #include <Arduino.h>
 #include <FastLED.h>
@@ -16,13 +12,10 @@
 #define COLOR_ORDER GRB
 #define BRIGHTNESS 150
 
-// Init and basic control
-void initLED(); // initialize FastLED and buffers
+void initLED();
 
-// Orientation display (moved from OrientationLED.cpp)
 void displayOrientationLED(const OrientationResult& o);
 
-// Navigation LED helpers
 void handleNavigationLED(const NavigationData& nav);
 void turnOffLED();
 void showColorLED(int R, int G, int B);

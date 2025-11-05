@@ -1,9 +1,4 @@
-/*
- * Main Application
- * ---------------------------------
- * Initializes WiFi, sensors, and LEDs. Handles the user button,
- * queries external APIs, and drives navigation/orientation feedback.
- */
+// Main application: WiFi, sensors, button, APIs, LEDs
 #include "LED/LEDModule.h"
 #include "apis/AI.h"
 #include "apis/Places.h"

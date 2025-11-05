@@ -1,9 +1,4 @@
-/*
- * LED Module
- * ---------------------------------
- * FastLED-based helpers to initialize and display
- * orientation/navigation cues on an LED ring/strip.
- */
+// LED utilities for orientation/navigation display
 #include <LED/LEDModule.h>
 #include <math.h>
 #include <sensors/Orientation.h>
@@ -20,9 +15,7 @@ void initLED() {
     FastLED.show();
 }
 
-// (Removed unused helpers: clearLED, showDirection)
-
-// Orientation LED display moved from src/OrientationLED.cpp
+// Orientation LED display
 static const int DIRECTION_MAP[16] = {
         0,  1,  15, 14, // N
         13, 12, 11, 10, // E
@@ -38,7 +31,7 @@ void displayOrientationLED(const OrientationResult& o) {
 
     FastLED.clear();
 
-    // Normalize angle [-180, 180)
+    // Normalize to [-180, 180)
     double rel = fmod(o.relativeAngle + 540.0, 360.0) - 180.0;
     int    dir = -1;
 
@@ -69,9 +62,7 @@ void displayOrientationLED(const OrientationResult& o) {
                   o.currentHeading, o.targetBearing);
 }
 
-//----------------------------------------------
-// 100m: Breathe twice during the yellow light
-//----------------------------------------------
+// 100 m: breathe twice in yellow
 static void breatheYellowTwice() {
     for (int cycle = 0; cycle < 2; cycle++) {
         for (int b = 0; b <= 255; b += 5) {
@@ -99,13 +90,7 @@ void showColorLED(int R, int G, int B) {
     FastLED.show();
 }
 
-// (Removed unused helper: breatheGreen)
-
-// (Removed unused helper: breatheColorForever)
-
-//----------------------------------------------
-// 50m Note: Rainbow effect for 5 seconds
-//----------------------------------------------
+// 50 m: rainbow effect for 5 seconds
 static void rainbowEffect5s() {
     unsigned long start = millis();
     uint8_t       hue   = 0;

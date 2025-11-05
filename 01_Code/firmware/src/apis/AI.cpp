@@ -1,9 +1,4 @@
-/*
- * AI API (Gemini)
- * ---------------------------------
- * Calls Gemini to filter a list of place types based on
- * current weather and local time. Returns a JSON-like array string.
- */
+// Gemini call to select place types from weather/time
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 #include <apis/AI.h>
