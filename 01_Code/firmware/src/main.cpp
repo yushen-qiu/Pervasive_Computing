@@ -29,7 +29,7 @@ bool          windowFinished = false;
 double latitude  = 0;
 double longitude = 0;
 
-bool   queryGeminiFlag = false;
+bool   apiFlag = false;
 GpsFix fix;
 
 String weatherCondition, localTime;
@@ -40,6 +40,9 @@ void setup() {
 
     Serial.println("[STARTING THE SETUP]");
 
+    initLED();
+    turnOffLED();
+
     WiFi.begin(Config::WIFI_SSID, Config::WIFI_PASSWORD);
     Serial.println("[CONNECTING WIFI]");
     while (WiFi.status() != WL_CONNECTED) {
@@ -49,7 +52,6 @@ void setup() {
 
     Serial.println("\n[WIFI CONNECTED]\n");
 
-    initLED();
     initGPS();
     xTaskCreate(taskGPS, "GPS", 4096, nullptr, 1, nullptr);
 
@@ -71,8 +73,8 @@ void loop() {
     if (reading != lastButtonState)
         lastDebounceTime = millis();
 
-    if (queryGeminiFlag == false) {
-        showColorLED(255, 0, 0);
+    if (apiFlag == false) {
+        showColorLED(255, 165, 0);
 
         if ((millis() - lastDebounceTime) > debounceDelay) {
             if (reading != buttonState) {
@@ -89,7 +91,7 @@ void loop() {
                         pressCount++;
                         turnOffLED();
                         delay(50);
-                        showColorLED(255, 0, 0);
+                        showColorLED(255, 165, 0);
                     }
 
                     Serial.print("Press count: ");
@@ -99,7 +101,7 @@ void loop() {
         }
 
         if (countingActive && (millis() - startTime > 5000)) {
-            showColorLED(255, 255, 255);
+            showColorLED(255, 0, 0);
             countingActive = false;
             windowFinished = true;
 
@@ -110,9 +112,10 @@ void loop() {
 
                 showColorLED(0, 0, 0);
                 delay(1000);
-                showColorLED(255, 255, 255);
+                showColorLED(255, 0, 0);
             }
-
+            
+            showColorLED(255, 255, 255);
             Serial.println("Final press count: " + String(pressCount));
 
             // Fetch Weather
@@ -123,7 +126,7 @@ void loop() {
 
             // Query Places API
             fetchNearbyPlace(filteredPlaceTypes, pressCount, latitude, longitude, destLat, destLng);
-            queryGeminiFlag = true;
+            apiFlag = true;
         }
 
         lastButtonState = reading;

@@ -5,34 +5,23 @@
 #include <config/Secrets.h>
 
 const char* allPlaceTypes[] = {"beach",
-                               "art_gallery",
                                "cultural_landmark",
                                "historical_place",
                                "monument",
-                               "museum",
-                               "city_hall",
                                "sculpture",
                                "amphitheatre",
                                "botanical_garden",
                                "cultural_center",
-                               "dog_park",
-                               "ferris_wheel",
                                "garden",
                                "hiking_area",
                                "historical_landmark",
-                               "marina",
                                "national_park",
-                               "observation_deck",
-                               "opera_house",
                                "park",
                                "picnic_ground",
-                               "planetarium",
                                "plaza",
                                "playground"
                                "tourist_attraction",
-                               "wildlife_park",
-                               "wildlife_refuge",
-                               "zoo"};
+                                };
 
 String queryGemini(String weatherCondition, String localTime) {
     if (WiFi.status() != WL_CONNECTED)
@@ -42,7 +31,7 @@ String queryGemini(String weatherCondition, String localTime) {
     http.setTimeout(30000);
     String url = "https://generativelanguage.googleapis.com/v1beta/models/"
                  "gemini-2.5-flash:generateContent?key=" +
-                 String(Config::GEMINI_API_KEY);
+                 String(Config::GOOGLE_API_KEY);
     http.begin(url);
     http.addHeader("Content-Type", "application/json");
 

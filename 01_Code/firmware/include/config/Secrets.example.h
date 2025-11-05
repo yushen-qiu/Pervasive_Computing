@@ -11,8 +11,7 @@ namespace Config {
     static const char* WIFI_SSID     = ""; // e.g., "MyWiFi"
     static const char* WIFI_PASSWORD = ""; // e.g., "SuperSecretPass"
 
-    static const char* GEMINI_API_KEY  = "";
-    static const char* PLACES_API_KEY  = "";
+    static const char* GOOGLE_API_KEY  = "";
     static const char* WEATHER_API_KEY = "";
 } // namespace Config
 

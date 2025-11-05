@@ -62,9 +62,9 @@ void displayOrientationLED(const OrientationResult& o) {
                   o.currentHeading, o.targetBearing);
 }
 
-// 100 m: breathe twice in yellow
-static void breatheYellowTwice() {
-    for (int cycle = 0; cycle < 2; cycle++) {
+// 100 m: breathe in yellow
+static void breatheYellow() {
+    for (int cycle = 0; cycle < 5; cycle++) {
         for (int b = 0; b <= 255; b += 5) {
             fill_solid(leds, Pins::LED_COUNT, CRGB(b, b, 0)); // Yellow
             FastLED.show();
@@ -90,11 +90,11 @@ void showColorLED(int R, int G, int B) {
     FastLED.show();
 }
 
-// 50 m: rainbow effect for 5 seconds
-static void rainbowEffect5s() {
+// 50 m: rainbow effect for 20 seconds
+static void rainbowEffect() {
     unsigned long start = millis();
     uint8_t       hue   = 0;
-    while (millis() - start < 5000) {
+    while (millis() - start < 20000) {
         fill_rainbow(leds, Pins::LED_COUNT, hue++, 7);
         FastLED.show();
         delay(30);
@@ -106,22 +106,18 @@ static void rainbowEffect5s() {
 void handleNavigationLED(const NavigationData& nav) {
     // --- First time entering the 100 metres ---
     if (!triggered100m && nav.distanceMeters <= 100 && nav.distanceMeters > 50) {
-        Serial.println("[NAV LED] Within 100 m → Yellow breathing twice");
+        Serial.println("[NAV LED] Within 100 m → Yellow breathing");
         triggered100m = true;
-        breatheYellowTwice();
+        breatheYellow();
     }
 
     // --- First time entering 50 metres ---
     if (!triggered50m && nav.distanceMeters <= 50) {
         Serial.println("[NAV LED] Within 50 m → Rainbow then shutdown");
         triggered50m = true;
-        rainbowEffect5s();
+        rainbowEffect();
 
         // Shut down the system
-        fill_solid(leds, Pins::LED_COUNT, CRGB::Black);
-        FastLED.show();
-        Serial.println("[NAV LED] System halted (near destination)");
-        while (true)
-            delay(1000);
+        ESP.restart();
     }
 }
