@@ -33,14 +33,14 @@ void taskGPS(void* pvParameters) {
         }
 
         static uint32_t lastPrint = 0;
-        if (millis() - lastPrint > 1000) {
-            Serial.printf("[GPS] fix=%s, sats=%u, hdop=%.1f, speed=%.2f m/s, course=%.1f°, "
-                          "lat=%.5f, lon=%.5f\n",
-                          gps.location.isValid() ? "OK" : "NO", gps.satellites.value(),
-                          gps.hdop.hdop(), gps.speed.mps(), gps.course.deg(), gps.location.lat(),
-                          gps.location.lng());
-            lastPrint = millis();
-        }
+        // if (millis() - lastPrint > 1000) {
+        //     Serial.printf("[GPS] fix=%s, sats=%u, hdop=%.1f, speed=%.2f m/s, course=%.1f°, "
+        //                   "lat=%.5f, lon=%.5f\n",
+        //                   gps.location.isValid() ? "OK" : "NO", gps.satellites.value(),
+        //                   gps.hdop.hdop(), gps.speed.mps(), gps.course.deg(), gps.location.lat(),
+        //                   gps.location.lng());
+        //     lastPrint = millis();
+        // }
         vTaskDelay(10 / portTICK_PERIOD_MS);
     }
 }

@@ -28,7 +28,8 @@ void setup() {
 }
 
 double prevLat = NAN, prevLng = NAN;
-void   loop() {
+
+void loop() {
     static unsigned long lastUpdate = 0;
     double               destLat    = -33.889938;
     double               destLng    = 151.192437;
@@ -39,21 +40,25 @@ void   loop() {
         return;
     }
 
-    if (isnan(prevLat)) { // First entry
+    if (isnan(prevLat)) {
         prevLat = fix.lat;
         prevLng = fix.lng;
         delay(500);
         return;
     }
 
-    // Calculate movement speed (if the GPS module provides speed, use fix.speed directly)
-    double speedMps = fix.speed_mps; // Directly retrieve values or calculate distance/time
-                                     // difference yourself
+    double speedMps = fix.speed_mps;
+
     OrientationResult o = computeOrientation(prevLat, prevLng, fix.lat, fix.lng, destLat, destLng,
-                                               refHeading, speedMps);
+                                             refHeading, speedMps);
+
+    NavigationData nav = computeNavigation(fix.lat, fix.lng, destLat, destLng);
+
+    Serial.printf("[INFO] Relative Angle: %.2f° | Distance: %.2f m\n", o.relativeAngle,
+                  nav.distanceMeters);
+
     displayOrientationLED(o);
 
-    // Update previous coordinates
     prevLat = fix.lat;
     prevLng = fix.lng;
 

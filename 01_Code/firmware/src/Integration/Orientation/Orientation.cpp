@@ -41,12 +41,12 @@ OrientationResult computeOrientation(double prevLat, double prevLng, double curr
     double diff       = nav.bearingToDest - res.movementBearing;
     res.relativeAngle = fmod(diff + 540.0, 360.0) - 180.0;
 
-    float heading = Magnetometer::headingDeg();
-    if (!isnan(heading)) {
-        res.headingCorrection = fmod((heading - referenceHeading + 360.0), 360.0);
-    } else {
-        res.headingCorrection = 0.0;
-    }
+    // float heading = Magnetometer::headingDeg();
+    // if (!isnan(heading)) {
+    //     res.headingCorrection = fmod((heading - referenceHeading + 360.0), 360.0);
+    // } else {
+    //     res.headingCorrection = 0.0;
+    // }
 
     res.isStationary = false;
     return res;

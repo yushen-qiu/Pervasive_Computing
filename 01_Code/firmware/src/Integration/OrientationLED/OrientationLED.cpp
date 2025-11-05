@@ -35,7 +35,7 @@ void displayOrientationLED(const OrientationResult& o) {
 
     FastLED.clear();
 
-    double rel = o.relativeAngle - o.headingCorrection;
+    double rel = o.relativeAngle;                  // - o.headingCorrection;
     rel        = fmod(rel + 540.0, 360.0) - 180.0; // Normalised to the range [-180, 180)
 
     int dir = -1;
