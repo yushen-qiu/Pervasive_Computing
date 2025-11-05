@@ -1,16 +1,17 @@
 #pragma once
 #include <Arduino.h>
 #include <FastLED.h>
-#include <Integration/Orientation/Orientation.h> // for OrientationResult
-#include <LED/LEDModule.h>                       // for leds[], NUM_LEDS
+#include <Integration/Orientation/Orientation.h>
+#include <LED/LEDModule.h>
 #include <math.h>
 
 /**
  * displayOrientationLED()
  * -----------------------
- * Given an OrientationResult (computed separately),
- * lights up the LED ring to indicate the direction of the destination.
+ * Displays the target direction on the LED ring according to OrientationResult.
+ * - If stationary: shows breathing blue effect.
+ * - If moving:     shows 4 LEDs pointing toward target relative to movement.
  *
- * @param o  OrientationResult containing currentHeading, targetBearing, relativeAngle
+ * @param o OrientationResult computed from GPS + magnetometer
  */
 void displayOrientationLED(const OrientationResult& o);

@@ -4,37 +4,40 @@
 /*
  * OrientationResult
  * -----------------
- * Holds the orientation information computed from GPS and magnetometer data.
+ * Holds the orientation and movement state computed from GPS + magnetometer data.
  *
- * - currentHeading:   current facing direction of the device (absolute from magnetic north)
- * - targetBearing:    absolute bearing from current location to destination
- * - relativeAngle:    signed angle difference between facing and target direction
- *                     (0° = facing the target, positive = target on the right)
+ * - movementBearing:   Bearing derived from recent GPS movement (degrees from North)
+ * - targetBearing:     Bearing from current position to destination
+ * - relativeAngle:     Signed angle difference (target relative to movement)
+ *                      (0° = moving directly toward target; + = target on right)
+ * - headingCorrection: Magnetometer-based correction for LED orientation (degrees)
+ * - isStationary:      True if GPS movement speed is too low (device stationary)
  */
 struct OrientationResult {
-    double currentHeading;
+    double movementBearing;
     double targetBearing;
     double relativeAngle;
+    double headingCorrection;
+    bool   isStationary;
 };
 
 /*
  * computeOrientation()
  * --------------------
- * Computes the current facing direction and the relative angle between the device’s
- * forward direction and the target location.
+ * Computes GPS-based movement bearing, target bearing, and relative angle.
+ * Magnetometer heading is used only for LED display correction.
  *
- * @param currentLat        Current latitude in degrees
- * @param currentLng        Current longitude in degrees
- * @param destLat           Destination latitude in degrees
- * @param destLng           Destination longitude in degrees
- * @param referenceHeading  Heading recorded after calibration (forward baseline)
+ * @param prevLat          Previous GPS latitude (degrees)
+ * @param prevLng          Previous GPS longitude (degrees)
+ * @param currentLat       Current GPS latitude (degrees)
+ * @param currentLng       Current GPS longitude (degrees)
+ * @param destLat          Destination latitude (degrees)
+ * @param destLng          Destination longitude (degrees)
+ * @param referenceHeading Baseline heading recorded after calibration
+ * @param speedMps         Current speed (m/s), used for motion detection
  *
- * @return OrientationResult containing:
- *         - currentHeading (absolute heading)
- *         - targetBearing (bearing to destination)
- *         - relativeAngle (difference between facing and target)
- *
- *
+ * @return OrientationResult containing full movement + LED correction data
  */
-OrientationResult computeOrientation(double currentLat, double currentLng, double destLat,
-                                     double destLng, double referenceHeading);
+OrientationResult computeOrientation(double prevLat, double prevLng, double currentLat,
+                                     double currentLng, double destLat, double destLng,
+                                     double referenceHeading, double speedMps);
