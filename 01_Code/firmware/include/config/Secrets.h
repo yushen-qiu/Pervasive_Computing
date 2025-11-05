@@ -1,4 +1,8 @@
-// Local secrets for WiFi and API keys. Do NOT commit.
+/*
+ * Secrets (Local)
+ * ---------------------------------
+ * WiFi credentials and API keys. Do NOT commit real values.
+ */
 #pragma once
 
 namespace Config {

@@ -1,7 +1,14 @@
+/*
+ * Places API
+ * ---------------------------------
+ * Searches nearby places using Google Places API, picks one result,
+ * and outputs destination coordinates.
+ */
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 #include <apis/Places.h>
 #include <config/Secrets.h>
+
 static int pressMultiplier = 200;
 
 void fetchNearbyPlace(String includedTypes, int pressCount, double lat, double lng,

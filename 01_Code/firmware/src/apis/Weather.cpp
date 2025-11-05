@@ -1,3 +1,9 @@
+/*
+ * Weather API
+ * ---------------------------------
+ * Fetches current weather and local time for given coordinates
+ * using WeatherAPI.
+ */
 #include <ArduinoJson.h>
 #include <HTTPClient.h>
 #include <apis/Weather.h>
@@ -8,9 +14,9 @@ void fetchWeather(String& condition, String& localTime, double lat, double lng) 
         return;
 
     HTTPClient http;
-    String     url = "http://api.weatherapi.com/v1/current.json?key=" +
-                 String(Config::WEATHER_API_KEY) +
-                 "&q=" + String(lat, 6) + "," + String(lng, 6);
+    String     url =
+            "http://api.weatherapi.com/v1/current.json?key=" + String(Config::WEATHER_API_KEY) +
+            "&q=" + String(lat, 6) + "," + String(lng, 6);
     http.begin(url);
     int httpCode = http.GET();
 

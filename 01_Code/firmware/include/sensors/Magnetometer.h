@@ -1,3 +1,6 @@
+/*
+ * Magnetometer - Interface
+ */
 #pragma once
 #include <Arduino.h>
 

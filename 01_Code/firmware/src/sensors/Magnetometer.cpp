@@ -1,3 +1,9 @@
+/*
+ * Magnetometer (MMC5603)
+ * ---------------------------------
+ * Initializes and reads the MMC5603 over I2C, provides heading in degrees,
+ * and supports basic calibration utilities.
+ */
 // Magnetometer module implementation for MMC5603
 #include <Adafruit_MMC56x3.h>
 #include <Arduino.h>

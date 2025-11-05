@@ -1,3 +1,9 @@
+/*
+ * Orientation
+ * ---------------------------------
+ * Combines magnetometer heading and navigation bearing to compute
+ * the relative angle to target.
+ */
 #include <Arduino.h>
 #include <math.h>
 #include <sensors/Magnetometer.h>

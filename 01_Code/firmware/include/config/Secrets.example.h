@@ -1,4 +1,9 @@
 // Local secrets for WiFi and API keys. Do NOT commit.
+/*
+ * Secrets (Example)
+ * ---------------------------------
+ * Template for WiFi credentials and API keys.
+ */
 #pragma once
 
 namespace Config {

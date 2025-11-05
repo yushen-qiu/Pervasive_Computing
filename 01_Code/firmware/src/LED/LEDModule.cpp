@@ -1,8 +1,14 @@
+/*
+ * LED Module
+ * ---------------------------------
+ * FastLED-based helpers to initialize and display
+ * orientation/navigation cues on an LED ring/strip.
+ */
 #include <LED/LEDModule.h>
 #include <math.h>
 #include <sensors/Orientation.h>
 
-CRGB        leds[Pins::LED_COUNT];
+static CRGB leds[Pins::LED_COUNT];
 static bool triggered100m = false;
 static bool triggered50m  = false;
 
@@ -14,50 +20,7 @@ void initLED() {
     FastLED.show();
 }
 
-// clear ring
-void clearLED() {
-    fill_solid(leds, Pins::LED_COUNT, CRGB::Black);
-    FastLED.show();
-}
-
-void showDirection(double bearingDeg) {
-    FastLED.clear();
-
-    // -------------------------------
-    // angle determine（centre ±45°）
-    // -------------------------------
-    // north 315–360 / 0–45
-    // east 45–135
-    // south 135–225
-    // west 225–315
-    int direction = -1; // 0=N, 1=E, 2=S, 3=W
-
-    if (bearingDeg >= 315 || bearingDeg < 45)
-        direction = 0; // n
-    else if (bearingDeg >= 45 && bearingDeg < 135)
-        direction = 1; // e
-    else if (bearingDeg >= 135 && bearingDeg < 225)
-        direction = 2; // s
-    else if (bearingDeg >= 225 && bearingDeg < 315)
-        direction = 3; // w
-
-    // -------------------------------
-    // corr led index
-    // -------------------------------
-    int startIndex = direction * 4; // 4 ea
-    for (int i = 0; i < 4; i++) {
-        leds[(startIndex + i) % Pins::LED_COUNT] = CRGB::Blue; // change colour
-    }
-
-    FastLED.show();
-
-    const char* dirName[] = {"North", "East", "South", "West"};
-    if (direction >= 0) {
-        Serial.printf("[LED] Direction: %s (%.1f°)\n", dirName[direction], bearingDeg);
-    } else {
-        Serial.printf("[LED] Unknown direction: %.1f°\n", bearingDeg);
-    }
-}
+// (Removed unused helpers: clearLED, showDirection)
 
 // Orientation LED display moved from src/OrientationLED.cpp
 static const int DIRECTION_MAP[16] = {
@@ -136,57 +99,9 @@ void showColorLED(int R, int G, int B) {
     FastLED.show();
 }
 
-static void breatheGreen() {
-    for (int cycle = 0; cycle < 2; cycle++) {
-        for (int b = 0; b <= 255; b += 5) {
-            // Green channel only: R=0, G=b, B=0
-            fill_solid(leds, Pins::LED_COUNT, CRGB(0, b, 0));
-            FastLED.show();
-            delay(8);
-        }
-        for (int b = 255; b >= 0; b -= 5) {
-            // Green channel only: R=0, G=b, B=0
-            fill_solid(leds, Pins::LED_COUNT, CRGB(0, b, 0));
-            FastLED.show();
-            delay(8);
-        }
-    }
-    FastLED.clear();
-    FastLED.show();
-}
+// (Removed unused helper: breatheGreen)
 
-void breatheColorForever(int R, int G, int B) {
-    // Clamp inputs to 0..255
-    auto clamp8 = [](int v) -> uint8_t {
-        if (v < 0)
-            return 0;
-        if (v > 255)
-            return 255;
-        return static_cast<uint8_t>(v);
-    };
-    const uint8_t baseR = clamp8(R);
-    const uint8_t baseG = clamp8(G);
-    const uint8_t baseB = clamp8(B);
-
-    for (;;) {
-        for (int level = 0; level <= 255; level += 5) {
-            uint8_t r = (uint16_t)baseR * level / 255;
-            uint8_t g = (uint16_t)baseG * level / 255;
-            uint8_t b = (uint16_t)baseB * level / 255;
-            fill_solid(leds, Pins::LED_COUNT, CRGB(r, g, b));
-            FastLED.show();
-            delay(8);
-        }
-        for (int level = 255; level >= 0; level -= 5) {
-            uint8_t r = (uint16_t)baseR * level / 255;
-            uint8_t g = (uint16_t)baseG * level / 255;
-            uint8_t b = (uint16_t)baseB * level / 255;
-            fill_solid(leds, Pins::LED_COUNT, CRGB(r, g, b));
-            FastLED.show();
-            delay(8);
-        }
-    }
-}
+// (Removed unused helper: breatheColorForever)
 
 //----------------------------------------------
 // 50m Note: Rainbow effect for 5 seconds

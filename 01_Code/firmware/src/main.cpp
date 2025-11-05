@@ -1,3 +1,9 @@
+/*
+ * Main Application
+ * ---------------------------------
+ * Initializes WiFi, sensors, and LEDs. Handles the user button,
+ * queries external APIs, and drives navigation/orientation feedback.
+ */
 #include "LED/LEDModule.h"
 #include "apis/AI.h"
 #include "apis/Places.h"
@@ -8,8 +14,8 @@
 
 #include <Arduino.h>
 #include <WiFi.h>
-#include <config/Secrets.h>
 #include <config/Pins.h>
+#include <config/Secrets.h>
 
 double destLat;
 double destLng;
@@ -19,15 +25,19 @@ int           buttonState;
 int           lastButtonState  = HIGH;
 unsigned long lastDebounceTime = 0;
 unsigned long debounceDelay    = 50;
-int           pressCount       = 0;
-bool          countingActive   = false;
-unsigned long startTime        = 0;
-bool          windowFinished   = false;
-double        latitude         = 0;
-double        longitude        = 0;
-bool          queryGeminiFlag  = false;
-GpsFix        fix;
-String        weatherCondition, localTime;
+
+int           pressCount     = 0;
+bool          countingActive = false;
+unsigned long startTime      = 0;
+bool          windowFinished = false;
+
+double latitude  = 0;
+double longitude = 0;
+
+bool   queryGeminiFlag = false;
+GpsFix fix;
+
+String weatherCondition, localTime;
 
 void setup() {
     Serial.begin(115200);
