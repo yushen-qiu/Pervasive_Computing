@@ -37,6 +37,7 @@ String weatherCondition, localTime;
 void setup() {
     Serial.begin(115200);
     pinMode(Pins::BUTTON, INPUT_PULLUP);
+
     Serial.println("[STARTING THE SETUP]");
 
     WiFi.begin(Config::WIFI_SSID, Config::WIFI_PASSWORD);
@@ -45,6 +46,7 @@ void setup() {
         delay(2000);
         Serial.println(">> retrying WIFI!");
     }
+
     Serial.println("\n[WIFI CONNECTED]\n");
 
     initLED();
@@ -52,9 +54,8 @@ void setup() {
     xTaskCreate(taskGPS, "GPS", 4096, nullptr, 1, nullptr);
 
     showColorLED(0, 255, 0);
-    if (!Magnetometer::begin()) {
+    if (!Magnetometer::begin())
         Serial.println("[ERROR] Magnetometer init failed");
-    }
 }
 
 void loop() {
@@ -106,6 +107,7 @@ void loop() {
                 Serial.println("Getting the lat/long again");
                 latitude  = getLat();
                 longitude = getLng();
+
                 showColorLED(0, 0, 0);
                 delay(1000);
                 showColorLED(255, 255, 255);
@@ -114,7 +116,6 @@ void loop() {
             Serial.println("Final press count: " + String(pressCount));
 
             // Fetch Weather
-
             fetchWeather(weatherCondition, localTime, latitude, longitude);
 
             // Query Gemini
@@ -126,19 +127,16 @@ void loop() {
         }
 
         lastButtonState = reading;
+        return;
+    }
 
-    } else {
-        if (getLatestFix(fix) && fix.valid) {
-            NavigationData nav = computeNavigation(fix.lat, fix.lng, destLat, destLng);
-            handleNavigationLED(nav);
-
-            OrientationResult o =
-                    computeOrientation(fix.lat, fix.lng, destLat, destLng, refHeading);
-            displayOrientationLED(o);
-        }
+    if (getLatestFix(fix) && fix.valid) {
+        NavigationData nav = computeNavigation(fix.lat, fix.lng, destLat, destLng);
+        handleNavigationLED(nav);
 
         OrientationResult o = computeOrientation(fix.lat, fix.lng, destLat, destLng, refHeading);
         displayOrientationLED(o);
-        delay(500);
     }
+
+    delay(500);
 }
