@@ -2,13 +2,13 @@
 #include <math.h>
 #include <sensors/Orientation.h>
 
-CRGB        leds[NUM_LEDS];
+CRGB        leds[Pins::LED_COUNT];
 static bool triggered100m = false;
 static bool triggered50m  = false;
 
 // init
 void initLED() {
-    FastLED.addLeds<LED_TYPE, LED_PIN, COLOR_ORDER>(leds, NUM_LEDS);
+    FastLED.addLeds<LED_TYPE, Pins::LED, COLOR_ORDER>(leds, Pins::LED_COUNT);
     FastLED.setBrightness(BRIGHTNESS);
     FastLED.clear();
     FastLED.show();
@@ -16,7 +16,7 @@ void initLED() {
 
 // clear ring
 void clearLED() {
-    fill_solid(leds, NUM_LEDS, CRGB::Black);
+    fill_solid(leds, Pins::LED_COUNT, CRGB::Black);
     FastLED.show();
 }
 
@@ -46,7 +46,7 @@ void showDirection(double bearingDeg) {
     // -------------------------------
     int startIndex = direction * 4; // 4 ea
     for (int i = 0; i < 4; i++) {
-        leds[(startIndex + i) % NUM_LEDS] = CRGB::Blue; // change colour
+        leds[(startIndex + i) % Pins::LED_COUNT] = CRGB::Blue; // change colour
     }
 
     FastLED.show();
@@ -112,12 +112,12 @@ void displayOrientationLED(const OrientationResult& o) {
 static void breatheYellowTwice() {
     for (int cycle = 0; cycle < 2; cycle++) {
         for (int b = 0; b <= 255; b += 5) {
-            fill_solid(leds, NUM_LEDS, CRGB(b, b, 0)); // Yellow
+            fill_solid(leds, Pins::LED_COUNT, CRGB(b, b, 0)); // Yellow
             FastLED.show();
             delay(8);
         }
         for (int b = 255; b >= 0; b -= 5) {
-            fill_solid(leds, NUM_LEDS, CRGB(b, b, 0));
+            fill_solid(leds, Pins::LED_COUNT, CRGB(b, b, 0));
             FastLED.show();
             delay(8);
         }
@@ -132,7 +132,7 @@ void turnOffLED() {
 }
 
 void showColorLED(int R, int G, int B) {
-    fill_solid(leds, NUM_LEDS, CRGB(R, G, B));
+    fill_solid(leds, Pins::LED_COUNT, CRGB(R, G, B));
     FastLED.show();
 }
 
@@ -140,13 +140,13 @@ static void breatheGreen() {
     for (int cycle = 0; cycle < 2; cycle++) {
         for (int b = 0; b <= 255; b += 5) {
             // Green channel only: R=0, G=b, B=0
-            fill_solid(leds, NUM_LEDS, CRGB(0, b, 0));
+            fill_solid(leds, Pins::LED_COUNT, CRGB(0, b, 0));
             FastLED.show();
             delay(8);
         }
         for (int b = 255; b >= 0; b -= 5) {
             // Green channel only: R=0, G=b, B=0
-            fill_solid(leds, NUM_LEDS, CRGB(0, b, 0));
+            fill_solid(leds, Pins::LED_COUNT, CRGB(0, b, 0));
             FastLED.show();
             delay(8);
         }
@@ -173,7 +173,7 @@ void breatheColorForever(int R, int G, int B) {
             uint8_t r = (uint16_t)baseR * level / 255;
             uint8_t g = (uint16_t)baseG * level / 255;
             uint8_t b = (uint16_t)baseB * level / 255;
-            fill_solid(leds, NUM_LEDS, CRGB(r, g, b));
+            fill_solid(leds, Pins::LED_COUNT, CRGB(r, g, b));
             FastLED.show();
             delay(8);
         }
@@ -181,7 +181,7 @@ void breatheColorForever(int R, int G, int B) {
             uint8_t r = (uint16_t)baseR * level / 255;
             uint8_t g = (uint16_t)baseG * level / 255;
             uint8_t b = (uint16_t)baseB * level / 255;
-            fill_solid(leds, NUM_LEDS, CRGB(r, g, b));
+            fill_solid(leds, Pins::LED_COUNT, CRGB(r, g, b));
             FastLED.show();
             delay(8);
         }
@@ -195,7 +195,7 @@ static void rainbowEffect5s() {
     unsigned long start = millis();
     uint8_t       hue   = 0;
     while (millis() - start < 5000) {
-        fill_rainbow(leds, NUM_LEDS, hue++, 7);
+        fill_rainbow(leds, Pins::LED_COUNT, hue++, 7);
         FastLED.show();
         delay(30);
     }
@@ -218,7 +218,7 @@ void handleNavigationLED(const NavigationData& nav) {
         rainbowEffect5s();
 
         // Shut down the system
-        fill_solid(leds, NUM_LEDS, CRGB::Black);
+        fill_solid(leds, Pins::LED_COUNT, CRGB::Black);
         FastLED.show();
         Serial.println("[NAV LED] System halted (near destination)");
         while (true)

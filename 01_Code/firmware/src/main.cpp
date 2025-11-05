@@ -9,11 +9,11 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <config/Secrets.h>
+#include <config/Pins.h>
 
 double destLat;
 double destLng;
 double refHeading = NAN;
-#define BUTTON_PIN 14
 
 int           buttonState;
 int           lastButtonState  = HIGH;
@@ -31,7 +31,7 @@ String        weatherCondition, localTime;
 
 void setup() {
     Serial.begin(115200);
-    pinMode(BUTTON_PIN, INPUT_PULLUP);
+    pinMode(Pins::BUTTON, INPUT_PULLUP);
     Serial.println("[STARTING THE SETUP]");
 
     WiFi.begin(Config::WIFI_SSID, Config::WIFI_PASSWORD);
@@ -61,7 +61,7 @@ void loop() {
         refHeading = Magnetometer::headingDeg();
     }
 
-    int reading = digitalRead(BUTTON_PIN);
+    int reading = digitalRead(Pins::BUTTON);
     if (reading != lastButtonState)
         lastDebounceTime = millis();
 

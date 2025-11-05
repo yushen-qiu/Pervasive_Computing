@@ -1,4 +1,5 @@
 #include <sensors/GPS.h>
+#include <config/Pins.h>
 
 HardwareSerial GPS(2);
 TinyGPSPlus    gps;
@@ -9,7 +10,7 @@ volatile double currentLat    = 0;
 volatile double currentLng    = 0;
 
 void initGPS() {
-    GPS.begin(9600, SERIAL_8N1, 16, 17);
+    GPS.begin(9600, SERIAL_8N1, Pins::GPS_RX, Pins::GPS_TX);
 }
 
 void taskGPS(void* pvParameters) {
