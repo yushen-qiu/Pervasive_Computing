@@ -13,8 +13,8 @@ ESP32-E project to build an interactive Gandalf staff.
 │         │── 📂 platformio.ini -> Build configs
 │
 │── 📂 02_Doc
-│    │── 📂 01_Report -> Project Documentations
-│    │── 📂 02_Example -> Example sketches
+│    │── 📂 01_Reports -> Project Documentations
+│    │── 📂 02_Examples -> Example sketches
 │
 │── 📂 03_Enclosure -> The 3D .STL model files
 │── 📜 README.md
