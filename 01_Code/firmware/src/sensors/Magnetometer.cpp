@@ -30,7 +30,7 @@ namespace Magnetometer {
     static const unsigned long autoCalibDurationMs = 20000; // 20s
 
     void computeCalibration() {
-        for (int i = 0; i < 3; i++) {   
+        for (int i = 0; i < 3; i++) {
             offset[i] = (magMax[i] + magMin[i]) / 2.0f;
         }
         const float avg_range =

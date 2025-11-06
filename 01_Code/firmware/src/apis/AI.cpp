@@ -4,24 +4,25 @@
 #include <apis/AI.h>
 #include <config/Secrets.h>
 
-const char* allPlaceTypes[] = {"beach",
-                               "cultural_landmark",
-                               "historical_place",
-                               "monument",
-                               "sculpture",
-                               "amphitheatre",
-                               "botanical_garden",
-                               "cultural_center",
-                               "garden",
-                               "hiking_area",
-                               "historical_landmark",
-                               "national_park",
-                               "park",
-                               "picnic_ground",
-                               "plaza",
-                               "playground"
-                               "tourist_attraction",
-                                };
+const char* allPlaceTypes[] = {
+        "beach",
+        "cultural_landmark",
+        "historical_place",
+        "monument",
+        "sculpture",
+        "amphitheatre",
+        "botanical_garden",
+        "cultural_center",
+        "garden",
+        "hiking_area",
+        "historical_landmark",
+        "national_park",
+        "park",
+        "picnic_ground",
+        "plaza",
+        "playground"
+        "tourist_attraction",
+};
 
 String queryGemini(String weatherCondition, String localTime) {
     if (WiFi.status() != WL_CONNECTED)

@@ -2,35 +2,6 @@
 
 ESP32-E project to build an interactive Gandalf staff.
 
-## Features
-
-1. Capture voice input to set a target location.
-2. Calibrate direction using sensors.
-3. Provide navigation guidance toward the target.
-4. Automatically switch on the light when it is dark.
-
-## Pin Allocation
-```
-| Usage        | Left  | Right | Usage        |
-|--------------|-------|-------|--------------|
-| —            | —     | VCC   | —            |
-| —            | —     | 3V3   | Magnetometer |
-| —            | —     | GND   | Magnetometer |
-| —            | —     | SCL   | Magnetometer |
-| —            | —     | SDA   | Magnetometer |
-| —            | 18    | 22    | —            |
-| —            | 23    | 21    | —            |
-| —            | 19    | 15    | —            |
-| —            | 22    | 35    | —            |
-| —            | 21    | 34    | —            |
-| —            | 2     | 39    | —            |
-| —            | 13    | 36    | —            |
-| Button       | 14    | 12    | —            |
-| —            | 0     | 4     | —            |
-| —            | 26    | 16    | —            |
-| —            | 25    | 17    | —            |
-```
-
 ## Repository Structure
 
 ```
@@ -42,12 +13,14 @@ ESP32-E project to build an interactive Gandalf staff.
 │         │── 📂 platformio.ini -> Build configs
 │
 │── 📂 02_Doc
-│    │── 📂 01_Example -> Example sketches
+│    │── 📂 01_Report -> Project Documentations
+│    │── 📂 02_Example -> Example sketches
 │
 │── 📂 03_Enclosure -> The 3D .STL model files
 │── 📜 README.md
 │── 📜 .gitignore
 ```
+
 ## Tools
 Format all C/C++ files in the repository
 ```bash

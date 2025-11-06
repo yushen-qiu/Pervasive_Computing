@@ -114,7 +114,7 @@ void loop() {
                 delay(1000);
                 showColorLED(255, 0, 0);
             }
-            
+
             showColorLED(255, 255, 255);
             Serial.println("Final press count: " + String(pressCount));
 
