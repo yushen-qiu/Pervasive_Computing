@@ -129,12 +129,14 @@ void loop() {
             // Select destination
             if (demoMode) {
                 // Fixed target for demo mode
-                destLat = -33.88580998525424;
-                destLng = 151.1891246790375;
+                destLat = -33.8899019914124;
+                destLng = 151.19237615118595;
+
                 Serial.printf("[DEMO] Using fixed destination: %.8f, %.8f\n", destLat, destLng);
             } else {
                 // Query Places API
-                fetchNearbyPlace(filteredPlaceTypes, pressCount, latitude, longitude, destLat, destLng);
+                fetchNearbyPlace(filteredPlaceTypes, pressCount, latitude, longitude, destLat,
+                                 destLng);
             }
             apiFlag = true;
         }
