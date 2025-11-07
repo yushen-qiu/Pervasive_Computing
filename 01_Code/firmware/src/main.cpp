@@ -34,6 +34,8 @@ GpsFix fix;
 
 String weatherCondition, localTime;
 
+bool demoMode = true;
+
 void setup() {
     Serial.begin(115200);
     pinMode(Pins::BUTTON, INPUT_PULLUP);
@@ -124,8 +126,16 @@ void loop() {
             // Query Gemini
             String filteredPlaceTypes = queryGemini(weatherCondition, localTime);
 
-            // Query Places API
-            fetchNearbyPlace(filteredPlaceTypes, pressCount, latitude, longitude, destLat, destLng);
+            // Select destination
+            if (demoMode) {
+                // Fixed target for demo mode
+                destLat = -33.88580998525424;
+                destLng = 151.1891246790375;
+                Serial.printf("[DEMO] Using fixed destination: %.8f, %.8f\n", destLat, destLng);
+            } else {
+                // Query Places API
+                fetchNearbyPlace(filteredPlaceTypes, pressCount, latitude, longitude, destLat, destLng);
+            }
             apiFlag = true;
         }
 
