@@ -3,7 +3,7 @@
 #include <sensors/GPS.h>
 
 // Demo mode flag declared in main.cpp
-extern bool demoMode;
+extern bool demoFixStart;
 
 // UART and TinyGPS++ parser
 HardwareSerial GPS(2);
@@ -23,7 +23,7 @@ void taskGPS(void* pvParameters) {
     (void)pvParameters;
     for (;;) {
         // In demo mode, fix the GPS position and skip UART parsing
-        if (demoMode) {
+        if (!GPS.available() && demoFixStart) {
             currentLat = -33.89019462116911;
             currentLng = 151.19298444298389;
             vTaskDelay(200 / portTICK_PERIOD_MS);

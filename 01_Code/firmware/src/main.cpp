@@ -34,7 +34,8 @@ GpsFix fix;
 
 String weatherCondition, localTime;
 
-bool demoMode = true;
+bool demoFixStart  = true;
+bool demoFixTarget = true;
 
 void setup() {
     Serial.begin(115200);
@@ -127,11 +128,9 @@ void loop() {
             String filteredPlaceTypes = queryGemini(weatherCondition, localTime);
 
             // Select destination
-            if (demoMode) {
-                // Fixed target for demo mode
+            if (demoFixTarget) {
                 destLat = -33.8899019914124;
                 destLng = 151.19237615118595;
-
                 Serial.printf("[DEMO] Using fixed destination: %.8f, %.8f\n", destLat, destLng);
             } else {
                 // Query Places API
